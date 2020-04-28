@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,6 +39,37 @@ public class ProfileActivity extends AppCompatActivity {
     String profileImgURL;
 
     FirebaseAuth mAuth;
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+
+        editText = (EditText) findViewById(R.id.editTextDisplayName);
+        imageView = (ImageView) findViewById(R.id.imageView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        imageView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                showImageChooser();
+            }
+        });
+
+        loadUserInformation();
+
+        findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveUserInformation();
+            }
+        });
+    }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -58,53 +90,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImageToFirebaseStorage() {
-        final StorageReference profileImageReference =
-                FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+".jpj");
-        if(uriProfileImage != null) {
-            progressBar.setVisibility(View.VISIBLE);
-            profileImageReference.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressBar.setVisibility(View.GONE);
-                    profileImgURL = taskSnapshot.getUploadSessionUri().toString();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(ProfileActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        editText = (EditText) findViewById(R.id.editTextDisplayName);
-        imageView = (ImageView) findViewById(R.id.imageView);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        mAuth = FirebaseAuth.getInstance();
-
-        imageView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                showImageChooser();
-            }
-        });
-
-
-
-        findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveUserInformation();
-            }
-        });
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() == null){
+            finish();
+            startActivity(new Intent(this,LoginActivity.class));
+        }
     }
 
     private void saveUserInformation() {
@@ -128,10 +120,31 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(ProfileActivity.this,"Profilee Uploaded",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this,"Profile Uploaded",Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
+        }
+    }
+
+    private void uploadImageToFirebaseStorage() {
+        final StorageReference profileImageReference =
+                FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+".jpg");
+        if(uriProfileImage != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            profileImageReference.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
+                    profileImgURL = taskSnapshot.getUploadSessionUri().toString();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(ProfileActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -140,6 +153,23 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Progile Image"),CHOOSE_IMAGE);
+        startActivityForResult(Intent.createChooser(intent,"Select Profile Image"),CHOOSE_IMAGE);
+    }
+
+    private void loadUserInformation() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if(user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(user.getPhotoUrl().toString())
+                        .into(imageView);
+            }
+            if (user.getDisplayName() != null) {
+                editText.setText(user.getDisplayName());
+            }
+        }
+
     }
 }
