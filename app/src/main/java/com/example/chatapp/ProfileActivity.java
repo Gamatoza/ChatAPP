@@ -31,6 +31,7 @@ import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    //for activity for result
     private static final int CHOOSE_IMAGE = 101;
     ImageView imageView;
     EditText editText;
@@ -51,6 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //call an image selection manager
         imageView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -58,8 +60,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        loadUserInformation();
+        loadUserInformation(); //load info into imageView & text
+        //!!!!!!!!!!!some troubles with unload to imageView
 
+        //save in firebase click listener
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        //multy check for request
         if(requestCode == CHOOSE_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null){
 
             uriProfileImage = data.getData();
@@ -93,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //if we don't have registered user, go back to login screen
         if(mAuth.getCurrentUser() == null){
             finish();
             startActivity(new Intent(this,LoginActivity.class));
@@ -100,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void saveUserInformation() {
+        //there are a coupe of bugs hidden here
         String displayName = editText.getText().toString();
         if(displayName.isEmpty()){
             editText.setError("Name required");
@@ -109,6 +115,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
 
+        //theoretically
+        //он просто не получает значение что бы его обновить
+        //в плане - profileImgURL = null
+        //но в гайде это работает, я тупо хрен знает
         if(user != null && profileImgURL != null){
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                     .setDisplayName(displayName)
@@ -128,6 +138,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void uploadImageToFirebaseStorage() {
+        //upload the image to Storage in firebox in profilepics/[samename].jgp
         final StorageReference profileImageReference =
                 FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+".jpg");
         if(uriProfileImage != null) {
@@ -148,7 +159,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
+    //Image Chooser Manager
     private void showImageChooser(){
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -156,10 +167,13 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent,"Select Profile Image"),CHOOSE_IMAGE);
     }
 
+
     private void loadUserInformation() {
 
         FirebaseUser user = mAuth.getCurrentUser();
 
+        //uses Glide addons to convert url into bitmap???
+        //straight into imageView
         if(user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this)
