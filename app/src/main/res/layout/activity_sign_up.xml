@@ -31,7 +31,7 @@
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress" />
@@ -40,32 +40,38 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="75dp"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonCreate"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:text="Create user"/>
-    <TextView
-        android:id="@+id/textViewLogin"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/SignUpText"
-        android:textAlignment="center"
-        />
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        />
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/buttonCreate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Create" />
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/SignUpText"
+            android:textAlignment="center"
+            />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_marginTop="70dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
 
 </LinearLayout>
