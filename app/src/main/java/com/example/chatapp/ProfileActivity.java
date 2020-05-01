@@ -3,16 +3,21 @@ package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //for activity for result
     private static final int CHOOSE_IMAGE = 101;
+    TextView textView;
     ImageView imageView;
     EditText editText;
     ProgressBar progressBar;
@@ -40,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
     String profileImgURL;
 
     FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -49,8 +56,11 @@ public class ProfileActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.editTextDisplayName);
         imageView = (ImageView) findViewById(R.id.imageView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
+        textView = (TextView)findViewById(R.id.textViewVerified);
         mAuth = FirebaseAuth.getInstance();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //call an image selection manager
         imageView.setOnClickListener(new View.OnClickListener(){
@@ -102,6 +112,32 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
             startActivity(new Intent(this,LoginActivity.class));
         }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menuLogout:
+
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(this,LoginActivity.class));
+
+                break;
+        }
+
+        return true;
     }
 
     private void saveUserInformation() {
@@ -147,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);
-                    profileImgURL = taskSnapshot.getUploadSessionUri().toString();
+                    profileImgURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -170,10 +206,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadUserInformation() {
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         //uses Glide addons to convert url into bitmap???
         //straight into imageView
+        //!!!!!!! а может проблема в том что он неправильно получает, я хз
         if(user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this)
@@ -182,6 +219,24 @@ public class ProfileActivity extends AppCompatActivity {
             }
             if (user.getDisplayName() != null) {
                 editText.setText(user.getDisplayName());
+            }
+
+            if(user.isEmailVerified()){
+                textView.setText("Email Verified");
+            } else {
+
+                   textView.setText("Email Not Verified (Click to Verify)");
+                   textView.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                               @Override
+                               public void onComplete(@NonNull Task<Void> task) {
+                                   Toast.makeText(ProfileActivity.this,"Verification email sent",Toast.LENGTH_SHORT).show();
+                               }
+                           });
+                       }
+                   });
             }
         }
 
