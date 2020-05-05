@@ -11,5 +11,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Change photo"/>
+<Button
+    android:id="@+id/buttonViewForum"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="View Forum"/>
+
+<Button
+    android:id="@+id/buttonCreateQuestion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Create question"/>
+
 
 </LinearLayout>

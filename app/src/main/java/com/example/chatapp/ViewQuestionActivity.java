@@ -60,6 +60,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         emojIconActions = new EmojIconActions(getApplicationContext(),activity_question,emojiconEditText,emojiButton);
         emojIconActions.ShowEmojIcon();
 
+        //посылает данные на сервер
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +82,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         }
 
     }
-
+    //получает данные с сревера
     private void displayAllMessages() {
         ListView listOfMessages = findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<Message>(this,Message.class,R.layout.list_item, FirebaseDatabase.getInstance().getReference()) {
