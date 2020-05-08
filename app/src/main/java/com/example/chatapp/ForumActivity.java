@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,8 +23,9 @@ import java.util.List;
 public class ForumActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
     private DatabaseReference myRef;
-    private List<Question> questions;
+    private FirebaseListAdapter<Question> adapter;
 
     private ListView listView;
 
@@ -35,29 +37,21 @@ public class ForumActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         listView = (ListView)findViewById(R.id.list_of_questions);
         myRef = FirebaseDatabase.getInstance().getReference();
+        user = mAuth.getCurrentUser();
 
-        FirebaseUser user = mAuth.getCurrentUser();
 
-        myRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        ListView listOfMessages = (ListView)findViewById(R.id.list_of_questions);
+        adapter = new FirebaseListAdapter<Question>
+                (this,Question.class,android.R.layout.simple_list_item_1,myRef.child("Questions")) {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<List<Question>> t = new GenericTypeIndicator<List<Question>>() {};
-                questions = dataSnapshot.child("Questions").getValue(t);
+            protected void populateView(@NonNull View v, @NonNull Question model, int position) {
+                TextView text = (TextView)v.findViewById(android.R.id.text1);
+                text.setText(model.getMainMessage().getText());
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        updateUI();
+        };
+        listOfMessages.setAdapter(adapter);
     }
 
-    private void updateUI() {
-        ArrayAdapter<Question> adapter = new ArrayAdapter<Question>(getBaseContext(),android.R.layout.simple_list_item_1,questions);
-        listView.setAdapter(adapter);
-    }
 
 
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Message {
     private String userName;
-    private String textMessage;
+    private String text;
     private long messageTime;
 
     public Message() {}
@@ -17,12 +17,12 @@ public class Message {
         this.userName = userName;
     }
 
-    public String getTextMessage() {
-        return textMessage;
+    public String getText() {
+        return text;
     }
 
-    public void setTextMessage(String textMessage) {
-        this.textMessage = textMessage;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public long getMessageTime() {
@@ -33,9 +33,9 @@ public class Message {
         this.messageTime = messageTime;
     }
 
-    public Message(String userName, String textMessage){
+    public Message(String userName, String text){
         this.userName = userName;
-        this.textMessage = textMessage;
+        this.text = text;
 
         this.messageTime = new Date().getTime();
 

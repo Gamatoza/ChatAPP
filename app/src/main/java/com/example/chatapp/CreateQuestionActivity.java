@@ -58,7 +58,7 @@ public class CreateQuestionActivity extends AppCompatActivity {
                         Content)
                 );
 
-                myRef.setValue(question);
+                myRef.push().setValue(question);
 
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

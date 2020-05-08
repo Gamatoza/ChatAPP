@@ -85,7 +85,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
     //получает данные с сревера
     private void displayAllMessages() {
         ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(this,Message.class,R.layout.list_item, FirebaseDatabase.getInstance().getReference()) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, FirebaseDatabase.getInstance().getReference()) {
             @Override
             protected void populateView(View v, Message model, int position) {
                 TextView mess_user,mess_time;
@@ -95,7 +95,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 mess_text = v.findViewById(R.id.message_text);
 
                 mess_user.setText(model.getUserName());
-                mess_text.setText(model.getTextMessage());
+                mess_text.setText(model.getText());
                 mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
 
             }

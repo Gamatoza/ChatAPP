@@ -45,10 +45,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:9.2.0'
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.firebaseui:firebase-ui:0.6.2'
-    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
-    //sFirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    //FirebaseUI for Firebase Realtime Database
+    //implementation 'com.firebaseui:firebase-ui-database:6.2.1'
 
 
     implementation 'com.github.lguipeng:BubbleView:1.0.1'
