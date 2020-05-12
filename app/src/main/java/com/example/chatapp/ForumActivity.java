@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -42,12 +44,14 @@ public class ForumActivity extends AppCompatActivity {
 
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_questions);
         adapter = new FirebaseListAdapter<Question>
-                (this,Question.class,android.R.layout.simple_list_item_1,myRef.child("Forums")) {
+                (this,Question.class,R.layout.list_questions,myRef.child("Forums")) {
             @Override
             protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
-                TextView text = (TextView)v.findViewById(android.R.id.text1);
+                TextView text = (TextView)v.findViewById(R.id.forum_question);
+                ImageView imageView = (ImageView)v.findViewById(R.id.imageViewGotAnswer);
                 text.setText(model.getTitle());
-                text.setOnClickListener(new View.OnClickListener() {
+                RelativeLayout forum = (RelativeLayout)v.findViewById(R.id.dsForum);
+                forum.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ForumActivity.this,ViewQuestionActivity.class);
@@ -55,6 +59,7 @@ public class ForumActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+                if(model.isDecided()) imageView.setImageResource(R.drawable.star_on);
             }
         };
         listOfMessages.setAdapter(adapter);
