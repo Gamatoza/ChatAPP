@@ -1,9 +1,12 @@
 package com.example.chatapp;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -15,7 +18,11 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import android.text.format.DateFormat;
 
@@ -30,6 +37,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private EmojiconEditText emojiconEditText;
     private ImageView emojiButton, submitButton;
     private EmojIconActions emojIconActions;
+    private static String KEY;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -47,10 +56,33 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+
+        Intent intent = getIntent();
+        KEY = intent.getStringExtra("forumRef");
+
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference()
+                .child("Forums").child(KEY);
+        final TextView textViewTitle = (TextView)findViewById(R.id.textViewTitle);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Question value = dataSnapshot.getValue(Question.class);
+                textViewTitle.setText(value.getMainMessage().getText());
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("TAG", "Failed to read value.");
+            }
+        });
+
 
         activity_question = findViewById(R.id.activity_question);
 
@@ -64,28 +96,30 @@ public class ViewQuestionActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance().getReference().push().setValue(new Message(
+                FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY).push().setValue(new Message(
                         FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                         emojiconEditText.getText().toString()
                 ));
                 emojiconEditText.setText("");
             }
         });
-
+/*
         //Проверка на авторизацию
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
         }
         else{
             Snackbar.make(activity_question, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
-            displayAllMessages();
-        }
+        }*/
+        displayAllMessages();
 
     }
     //получает данные с сревера
     private void displayAllMessages() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY);
+        if(ref == null) ref.setValue(KEY);
         ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, FirebaseDatabase.getInstance().getReference()) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, ref) {
             @Override
             protected void populateView(View v, Message model, int position) {
                 TextView mess_user,mess_time;
@@ -100,7 +134,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
             }
         };
-
         listOfMessages.setAdapter(adapter);
     }
 }

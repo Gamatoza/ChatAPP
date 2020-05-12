@@ -3,6 +3,7 @@ package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -39,14 +40,21 @@ public class ForumActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getCurrentUser();
 
-
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_questions);
         adapter = new FirebaseListAdapter<Question>
-                (this,Question.class,android.R.layout.simple_list_item_1,myRef.child("Questions")) {
+                (this,Question.class,android.R.layout.simple_list_item_1,myRef.child("Forums")) {
             @Override
-            protected void populateView(@NonNull View v, @NonNull Question model, int position) {
+            protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
                 TextView text = (TextView)v.findViewById(android.R.id.text1);
-                text.setText(model.getMainMessage().getText());
+                text.setText(model.getTitle());
+                text.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ForumActivity.this,ViewQuestionActivity.class);
+                        intent.putExtra("forumRef",model.getId());
+                        startActivity(intent);
+                    }
+                });
             }
         };
         listOfMessages.setAdapter(adapter);

@@ -32,7 +32,7 @@ public class CreateQuestionActivity extends AppCompatActivity {
         contentEditText = (EditText)findViewById(R.id.question_content);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Questions");
+        myRef = database.getReference("Forums");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -51,14 +51,15 @@ public class CreateQuestionActivity extends AppCompatActivity {
                     contentEditText.requestFocus();
                     return;
                 }
-                Question question = new Question("0", mAuth.getUid());
+                final String key = myRef.push().getKey();
+                Question question = new Question(key, mAuth.getUid());
                 question.setTitle(Title);
                 question.setMainMessage(new Message(
                         FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                         Content)
                 );
+                myRef.child(key).setValue(question);
 
-                myRef.push().setValue(question);
 
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

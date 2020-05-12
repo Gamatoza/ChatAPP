@@ -7,7 +7,7 @@ public class Message {
     private String text;
     private long messageTime;
 
-    public Message() {}
+    Message(){}
 
     public String getUserName() {
         return userName;
