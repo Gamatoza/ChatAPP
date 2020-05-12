@@ -1,9 +1,11 @@
 package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -129,9 +131,11 @@ public class ViewQuestionActivity extends AppCompatActivity {
             protected void populateView(View v, final Message model, int position) {
                 TextView mess_user,mess_time;
                 BubbleTextView mess_text;
+                ImageView deleteImageView;
                 mess_user = v.findViewById(R.id.message_user);
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
+                deleteImageView = v.findViewById(R.id.imageViewDelete);
 
                 RelativeLayout relativeLayout;
                 relativeLayout = v.findViewById(R.id.dsMessage);
@@ -154,8 +158,29 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     });
                 }
                 //переделать позже под userid когда изменишь Message
-                if(isAuthor || model.getUserName().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-                    //обработчик удаления сообщения
+                //?? isAuthor ||
+                if(model.getUserName().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                    deleteImageView.setVisibility(View.VISIBLE);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewQuestionActivity.this);
+                    builder.setTitle("Предупреждение");
+                    builder.setMessage("Вы действительно хотите удалить сообщение?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //обработчик удаления сообщения
+                            //FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY).removeValue(model);
+                            dialog.dismiss(); // Отпускает диалоговое окно
+                        }
+                    });
+                    final AlertDialog dialog = builder.create();
+                    deleteImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.show();
+                        }
+                    });
+
                 }
             }
         };
