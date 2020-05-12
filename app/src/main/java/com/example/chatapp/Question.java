@@ -72,7 +72,6 @@ public class Question {
         this.mainMessage = mainMessage;
     }
 
-
     public long getStateTime() {
         return stateTime;
     }
@@ -88,7 +87,7 @@ public class Question {
 
     public void setAnswer(String ID) {
         isDecided = true;
-        this.answerMessageID = answerMessageID;
+        this.answerMessageID = ID;
     }
 
     public void removeAnswer(){

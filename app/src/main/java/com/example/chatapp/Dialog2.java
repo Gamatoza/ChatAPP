@@ -17,7 +17,7 @@ public class Dialog2 extends DialogFragment implements OnClickListener {
                 .setTitle("Title!").setPositiveButton(R.string.yes, this)
                 .setNegativeButton(R.string.no, this)
                 .setNeutralButton(R.string.maybe, this)
-                .setMessage(R.string.message_text);
+                .setMessage("some text");
         return adb.create();
     }
 

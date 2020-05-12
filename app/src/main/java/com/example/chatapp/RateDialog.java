@@ -8,14 +8,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class DeleteDialog extends DialogFragment implements OnClickListener {
+public class RateDialog extends DialogFragment implements OnClickListener {
 
     private static String MESSAGE_KEY = "";
     private static String FORUM_KEY = "";
@@ -32,7 +29,7 @@ public class DeleteDialog extends DialogFragment implements OnClickListener {
                 .setPositiveButton("Да", this)
                 .setNegativeButton("Отмена", this)
                 //.setNeutralButton(R.string.maybe, this)
-                .setMessage(R.string.delete_message_text);
+                .setMessage(R.string.rate_message_text);
         return adb.create();
     }
 

@@ -125,18 +125,20 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private void displayAllMessages() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY);
         if(ref == null) ref.setValue(KEY);
-        ListView listOfMessages = findViewById(R.id.list_of_messages);
+        final ListView listOfMessages = findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
                 TextView mess_user,mess_time;
-                BubbleTextView mess_text;
-                ImageView deleteImageView;
+                final BubbleTextView mess_text;
+                final ImageView deleteImageView,rateImageView;
                 mess_user = v.findViewById(R.id.message_user);
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
+
                 deleteImageView = v.findViewById(R.id.imageViewDelete);
+                rateImageView = v.findViewById(R.id.imageViewRate);
 
                 RelativeLayout relativeLayout;
                 relativeLayout = v.findViewById(R.id.dsMessage);
@@ -147,14 +149,39 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
                 //Если это сообщение является ответом, оно помечается
                 if(model.getId().equals(currentQuestion.getAnswer())){
-                    relativeLayout.setBackgroundColor(R.color.answerBackground);
-                }
+                    rateImageView.setImageResource(R.drawable.star_on);
+                }else rateImageView.setImageResource(R.drawable.star_off);
                 //добавить обработчик для назначения ответа и для снятия его
                 if(isAuthor){
+                    rateImageView.setVisibility(View.VISIBLE);
+
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Snackbar.make(activity_question, "Это сообщение имеет id = " + model.getId(), Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    rateImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            //Это надо как то упростить
+                            if(currentQuestion.isDecided()) { //Если ответ уже есть
+                                currentQuestion.removeAnswer(); //Удаляет ответ
+                                if(currentQuestion.getAnswer().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
+                                    rateImageView.setImageResource(R.drawable.star_off);    //Просто удаляем с него пометку
+                                }
+                                else{                                                       //Иначе
+                                    currentQuestion.setAnswer(model.getId());               //Ставим новый ответ
+                                    rateImageView.setImageResource(R.drawable.star_on);     //Ставим пометку
+                                }
+                            }
+                            else {                                                          //Если ответа нет
+                                currentQuestion.setAnswer(model.getId());                   //Ставим его
+                                rateImageView.setImageResource(R.drawable.star_on);         //Ставим пометку
+                            }
+                            FirebaseDatabase.getInstance().getReference().child("Forums").child(KEY).setValue(currentQuestion);
                         }
                     });
                 }
@@ -196,5 +223,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
         };
         listOfMessages.setAdapter(adapter);
     }
+
+    public void onClick(View v) {
+
+    }
+
 
 }
