@@ -22,7 +22,7 @@ public class CreateQuestionActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
 
-    EditText nameEditText,contentEditText;
+    EditText nameEditText,contentEditText; //два заполненных поля, Заголовок и сам Вопрос соответсвенно
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +36,8 @@ public class CreateQuestionActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //обработчик кнопки
+        //пушит в Forums новый вопрос
         findViewById(R.id.submit_question).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,11 +58,11 @@ public class CreateQuestionActivity extends AppCompatActivity {
                 question.setTitle(Title);
                 question.setMainMessage(new Message(
                         FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                        Content)
+                        Content, question.getStateTime())
                 );
                 myRef.child(key).setValue(question);
 
-
+                //после создания переходит обратно в мейн
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

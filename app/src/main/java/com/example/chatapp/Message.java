@@ -3,11 +3,22 @@ package com.example.chatapp;
 import java.util.Date;
 
 public class Message {
-    private String userName;
-    private String text;
-    private long messageTime;
+
+    private String id;              //идентификатор сообщения
+    private String userName;        //email пользователя
+    private String text;            //внутренний текст
+    private long messageTime;       //время отправки сообщения
+
+    {
+        id = "0";
+        this.messageTime = new Date().getTime();
+    }
 
     Message(){}
+
+    public String getId() {
+        return id;
+    }
 
     public String getUserName() {
         return userName;
@@ -36,8 +47,23 @@ public class Message {
     public Message(String userName, String text){
         this.userName = userName;
         this.text = text;
-
-        this.messageTime = new Date().getTime();
-
     }
+
+    public Message(String userName, String text,String id){
+        this.userName = userName;
+        this.text = text;
+        this.id = id;
+    }
+    public Message(String userName, String text,long messageTime){
+        this.userName = userName;
+        this.text = text;
+        this.messageTime = messageTime;
+    }
+    public Message(String userName, String text,String id,long messageTime){
+        this.userName = userName;
+        this.text = text;
+        this.id = id;
+        this.messageTime = messageTime;
+    }
+
 }

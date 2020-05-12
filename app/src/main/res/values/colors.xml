@@ -8,7 +8,7 @@
     <color name="colorMainSU">#2a79ba</color>
     <color name="colorSecondSU">#2a3fba</color>
 
-
     <!--Message activity colors-->
     <color name="whiteBackground">#FFF</color>
+    <color name="answerBackground">#f7d90f</color>
 </resources>

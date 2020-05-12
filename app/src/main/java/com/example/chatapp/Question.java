@@ -3,20 +3,27 @@ package com.example.chatapp;
 import java.util.Date;
 import java.util.List;
 
+///Класс форума или вопроса
+///Предназначен для хранения и отображения информации о текущем вопросе, форуме, ответе и т.п.
+
+
 public class Question {
 
 
-    private String id;
-    private String ownerID;
+    private String id;                  //ID форума, сюда передается ключ push
+    private String ownerID;             //ID владельца
 
-    private String title;
+    private String title;               //Название, отображается в списке
 
+    private Boolean isDecided;          //Есть ли у этого вопроса ответ
+    private String answerMessageID;     //ID ответа
 
-    private Message mainMessage;
-    private long stateTime;
+    private Message mainMessage;        //Главное сообщение, являющееся вопросом
+    private long stateTime;             //Время создания вопроса
 
     {
         this.stateTime = new Date().getTime();
+        isDecided = false; //????
     }
 
     public Question() { }
@@ -68,5 +75,24 @@ public class Question {
 
     public long getStateTime() {
         return stateTime;
+    }
+
+
+    public Boolean isDecided(){
+        return  isDecided;
+    }
+
+    public String getAnswer() {
+        return answerMessageID;
+    }
+
+    public void setAnswer(String ID) {
+        isDecided = true;
+        this.answerMessageID = answerMessageID;
+    }
+
+    public void removeAnswer(){
+        isDecided = false;
+        answerMessageID = "";
     }
 }
