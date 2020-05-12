@@ -60,6 +60,7 @@ public class ForumActivity extends AppCompatActivity {
                     }
                 });
                 if(model.isDecided()) imageView.setImageResource(R.drawable.star_on);
+                else imageView.setImageResource(R.drawable.star_off);
             }
         };
         listOfMessages.setAdapter(adapter);

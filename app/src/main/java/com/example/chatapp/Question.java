@@ -92,6 +92,6 @@ public class Question {
 
     public void removeAnswer(){
         isDecided = false;
-        answerMessageID = "";
+        answerMessageID = null;
     }
 }

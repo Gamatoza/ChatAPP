@@ -22,6 +22,7 @@
         android:maxWidth="5dp"
         android:maxHeight="5dp"
         android:src="@drawable/star_off"
+        android:visibility="gone"
         />
 
     <ImageView
@@ -40,7 +41,7 @@
         android:maxWidth="5dp"
         android:maxHeight="5dp"
         android:src="@drawable/cross"
-
+        android:visibility="gone"
         />
     <TextView
         android:id="@+id/message_user"
