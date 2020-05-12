@@ -11,4 +11,12 @@
     <string name="login_failed">"Login failed"</string>
     <string name="LoginText">Don\'t have account? <u><b>Sign up</b></u></string>
     <string name="SignUpText">Already have account? <u><b>Login</b></u></string>
+
+    <!--Dialog strings-->
+    <string name="dialog_1">Dialog 1</string>
+    <string name="dialog_2">Dialog 2</string>
+    <string name="message_text">Вы действительно хотите удалить это сообщение?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="maybe">Maybe</string>
 </resources>

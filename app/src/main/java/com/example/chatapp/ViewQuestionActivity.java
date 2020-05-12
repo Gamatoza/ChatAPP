@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -39,9 +40,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private ImageView emojiButton, submitButton;   //Два изображения, отправка и вызов смайлов
     private EmojIconActions emojIconActions;       //Окно где был выбран смайл
 
-    private static String KEY;                     //ID вопроса, передается с нажатия на вопрос
+    private String KEY;                     //ID вопроса, передается с нажатия на вопрос
     private Question currentQuestion;              //Сам вопрос
-    private static Boolean isAuthor = false;       //Проверка на авторство
+    private Boolean isAuthor = false;       //Проверка на авторство
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -161,6 +162,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 //?? isAuthor ||
                 if(model.getUserName().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
                     deleteImageView.setVisibility(View.VISIBLE);
+                    final DeleteDialog dlg = new DeleteDialog();
+                    /*
                     AlertDialog.Builder builder = new AlertDialog.Builder(ViewQuestionActivity.this);
                     builder.setTitle("Предупреждение");
                     builder.setMessage("Вы действительно хотите удалить сообщение?");
@@ -174,10 +177,17 @@ public class ViewQuestionActivity extends AppCompatActivity {
                         }
                     });
                     final AlertDialog dialog = builder.create();
+                    */
+
                     deleteImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.show();
+                            Bundle args = new Bundle();
+                            args.putString("forum_key",KEY);
+                            args.putString("message_key",model.getId());
+                            dlg.setArguments(args);
+                            dlg.show(getFragmentManager(),"dlg");
+                            //dialog.show();
                         }
                     });
 
@@ -186,4 +196,5 @@ public class ViewQuestionActivity extends AppCompatActivity {
         };
         listOfMessages.setAdapter(adapter);
     }
+
 }
