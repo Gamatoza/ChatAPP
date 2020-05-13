@@ -1,12 +1,9 @@
 package com.example.chatapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +17,7 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,16 +31,23 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class ViewQuestionActivity extends AppCompatActivity {
 
-    private static int SIGN_IN_CODE = 1;           //Нужен для проверки на авторизацию, позже заменю
-    private RelativeLayout activity_question;      //Основной бэкграунд
-    private FirebaseListAdapter<Message> adapter;  //Адаптер для обновления сообщений
-    private EmojiconEditText emojiconEditText;     //Сообщение, одновременно является обработчиком смайлов
-    private ImageView emojiButton, submitButton;   //Два изображения, отправка и вызов смайлов
-    private EmojIconActions emojIconActions;       //Окно где был выбран смайл
+    private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
+    private RelativeLayout activity_question;           //Основной бэкграунд
+    private FirebaseListAdapter<Message> adapter;       //Адаптер для обновления сообщений
+    private EmojiconEditText emojiconEditText;          //Сообщение, одновременно является обработчиком смайлов
+    private ImageView emojiButton, submitButton;        //Два изображения, отправка и вызов смайлов
+    private EmojIconActions emojIconActions;            //Окно где был выбран смайл
 
-    private String KEY;                     //ID вопроса, передается с нажатия на вопрос
-    private Question currentQuestion;              //Сам вопрос
-    private Boolean isAuthor = false;       //Проверка на авторство
+    private String FORUM_ID;                                 //ID вопроса, передается с нажатия на вопрос
+    private Question currentQuestion;                   //Сам вопрос
+    private Boolean isAuthor = false;                   //Проверка на авторство
+
+
+    private FirebaseUser user;                          //Текущий пользователь
+    private FirebaseDatabase database;                  //БД
+    private DatabaseReference mainRef;                  //Ссылка на главный рут
+
+    private static String LOG_TAG;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -66,31 +71,43 @@ public class ViewQuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
-        KEY = intent.getStringExtra("forumRef"); //Передаем ID форума
+        FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        mainRef = database.getReference();
+
+        activity_question = findViewById(R.id.activity_question);
+
+        //region Получение текущего вопроса и назначение заголовка с вопросом
         //Достаем текущий форум и сразу назначаем вопрос
         //Таким образом он будет обновлятся, если вдруг автор решит изменить вопрос
+        final TextView textViewTitle,textViewDescription;
+        textViewTitle = findViewById(R.id.textViewTitle);
+        textViewDescription = findViewById(R.id.textViewDescription);
 
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference()
-                .child("Forums").child(KEY);
-        final TextView textViewTitle = (TextView)findViewById(R.id.textViewTitle);
-        myRef.addValueEventListener(new ValueEventListener() {
+        mainRef.child("Forums").child(FORUM_ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 currentQuestion = dataSnapshot.getValue(Question.class);
-                textViewTitle.setText(currentQuestion.getMainMessage().getText());
+
+                textViewTitle.setText(currentQuestion.getTitle());
+                textViewDescription.setText(currentQuestion.getMainMessage().getText());
+
                 //Проверяет является ли автором зашедший пользователь
-                if(currentQuestion.getOwnerID().equals(FirebaseAuth.getInstance().getUid()))
+                if(currentQuestion.getUserID().equals(user.getUid()))
                     isAuthor = true;
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("TAG", "Failed to read value.");
+                Log.w(LOG_TAG, "Failed to read value.");
             }
         });
+        //endregion
 
-        activity_question = findViewById(R.id.activity_question);
+        //region Добавление обработчика на посыл сообщения
 
         submitButton= findViewById(R.id.submit_button);
         emojiButton= findViewById(R.id.emoji_button);
@@ -102,60 +119,60 @@ public class ViewQuestionActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String key = FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY).push().getKey();
-                FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY).child(key).setValue(new Message(
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                        emojiconEditText.getText().toString(),key
+                String pushID = mainRef.child("Messages").child(FORUM_ID).push().getKey();
+                mainRef.child("Messages").child(FORUM_ID).child(pushID).setValue(new Message(
+                        pushID,                                         //передаем
+                        emojiconEditText.getText().toString().trim(),
+                        user
                 ));
                 emojiconEditText.setText("");
             }
         });
-/*
-        //Проверка на авторизацию
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
-        }
-        else{
-            Snackbar.make(activity_question, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
-        }*/
-        displayAllMessages();
+
+        //endregion
+
+        displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
 
     }
+
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY);
-        if(ref == null) ref.setValue(KEY);
+        DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
+        //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
+                //Назначение информации в облачке
                 TextView mess_user,mess_time;
                 final BubbleTextView mess_text;
-                final ImageView deleteImageView,rateImageView;
                 mess_user = v.findViewById(R.id.message_user);
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
 
-                deleteImageView = v.findViewById(R.id.imageViewDelete);
+                //Получаем id удаления сообщения и ответа
+                final ImageView rateImageView;
                 rateImageView = v.findViewById(R.id.imageViewRate);
 
                 RelativeLayout relativeLayout;
                 relativeLayout = v.findViewById(R.id.dsMessage);
 
-                mess_user.setText(model.getUserName());
+                mess_user.setText(model.getUserDisplayName());
                 mess_text.setText(model.getText());
                 mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
 
                 //Если это сообщение является ответом, оно помечается
                 if(model.getId().equals(currentQuestion.getAnswer())){
+                    rateImageView.setVisibility(View.VISIBLE);
                     rateImageView.setImageResource(R.drawable.star_on);
                 }else rateImageView.setImageResource(R.drawable.star_off);
-                //добавить обработчик для назначения ответа и для снятия его
-                if(isAuthor){
-                    rateImageView.setVisibility(View.VISIBLE);
 
+                //Если текущий пользователь является автором вопроса
+                if(isAuthor){
+
+                    //Проверка
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -163,6 +180,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                         }
                     });
 
+                    //Обработчик для назначения ответа
                     rateImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -182,52 +200,35 @@ public class ViewQuestionActivity extends AppCompatActivity {
                                 currentQuestion.setAnswer(model.getId());                   //Ставим его
                                 rateImageView.setImageResource(R.drawable.star_on);         //Ставим пометку
                             }
-                            FirebaseDatabase.getInstance().getReference().child("Forums").child(KEY).setValue(currentQuestion);
+                            FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_ID).setValue(currentQuestion);
                         }
                     });
                 }
-                //переделать позже под userid когда изменишь Message
-                //?? isAuthor ||
-                if(model.getUserName().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+
+                final ImageView deleteImageView;
+                deleteImageView = v.findViewById(R.id.imageViewDelete);
+                //Если пользователь является тем, кто написал это сообщение, то может его удалить
+                if(model.getUserID().equals(user.getUid())){
+
+
                     deleteImageView.setVisibility(View.VISIBLE);
                     final DeleteDialog dlg = new DeleteDialog();
-                    /*
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewQuestionActivity.this);
-                    builder.setTitle("Предупреждение");
-                    builder.setMessage("Вы действительно хотите удалить сообщение?");
-                    builder.setCancelable(true);
-                    builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //обработчик удаления сообщения
-                            //FirebaseDatabase.getInstance().getReference().child("Messages").child(KEY).removeValue(model);
-                            dialog.dismiss(); // Отпускает диалоговое окно
-                        }
-                    });
-                    final AlertDialog dialog = builder.create();
-                    */
 
                     deleteImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Bundle args = new Bundle();
-                            args.putString("forum_key",KEY);
+                            args.putString("forum_key", FORUM_ID);
                             args.putString("message_key",model.getId());
                             dlg.setArguments(args);
                             dlg.show(getFragmentManager(),"dlg");
-                            //dialog.show();
                         }
                     });
 
-                }
+                }else deleteImageView.setVisibility(View.GONE);
             }
         };
+
         listOfMessages.setAdapter(adapter);
     }
-
-    public void onClick(View v) {
-
-    }
-
-
 }

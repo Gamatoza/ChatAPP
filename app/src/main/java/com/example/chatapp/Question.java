@@ -10,50 +10,60 @@ import java.util.List;
 public class Question {
 
 
-    private String id;                  //ID форума, сюда передается ключ push
-    private String ownerID;             //ID владельца
 
-    private String title;               //Название, отображается в списке
+    private String id;              //ID форума, push ключ          g
 
-    private Boolean isDecided;          //Есть ли у этого вопроса ответ
-    private String answerMessageID;     //ID ответа
+    //region Колонка пользователя
+    ///Важность параметры сверху вниз
+    private String userID;          // ID с Firebase                g
+    //endregion
 
-    private Message mainMessage;        //Главное сообщение, являющееся вопросом
-    private long stateTime;             //Время создания вопроса
+    private String title;           //Заголовок                     gs
+
+    private Boolean isDecided;      //Проверка ответа               gs
+    private String answerMessageID; //ID ответа                     gs
+
+    private Message mainMessage;    //Вопрос                        gs
+    private long stateTime;         //Время создания вопроса        gs
 
     {
         this.stateTime = new Date().getTime();
         isDecided = false; //????
     }
 
+    //region Constructors
+
     public Question() { }
 
 
-    public Question(String id, String ownerID) {
+    public Question(String id, String userID) {
         this.id = id;
-        this.ownerID = ownerID;
+        this.userID = userID;
     }
 
-    public Question(String id, String ownerID, String forumID, String title, Message mainMessage) {
-        this.id = id;
-        this.ownerID = ownerID;
+    public Question(String id, String userID, String title, Message mainMessage) {
+        this(id,userID);
         this.title = title;
         this.mainMessage = mainMessage;
+        mainMessage.setMessageTime(stateTime);
     }
 
     public Question(Question parent) {
         this.id = parent.getId();
-        this.ownerID = parent.getOwnerID();
+        this.userID = parent.getUserID();
         this.title = parent.getTitle();
         this.mainMessage = parent.getMainMessage();
     }
+    //endregion
+
+    //region Getters Setters
 
     public String getId() {
         return id;
     }
 
-    public String getOwnerID() {
-        return ownerID;
+    public String getUserID() {
+        return userID;
     }
 
     public String getTitle() {
@@ -76,11 +86,6 @@ public class Question {
         return stateTime;
     }
 
-
-    public Boolean isDecided(){
-        return  isDecided;
-    }
-
     public String getAnswer() {
         return answerMessageID;
     }
@@ -88,6 +93,12 @@ public class Question {
     public void setAnswer(String ID) {
         isDecided = true;
         this.answerMessageID = ID;
+    }
+
+    //endregion
+
+    public Boolean isDecided(){
+        return  isDecided;
     }
 
     public void removeAnswer(){

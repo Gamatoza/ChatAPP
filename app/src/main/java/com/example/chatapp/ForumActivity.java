@@ -47,9 +47,16 @@ public class ForumActivity extends AppCompatActivity {
                 (this,Question.class,R.layout.list_questions,myRef.child("Forums")) {
             @Override
             protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
-                TextView text = (TextView)v.findViewById(R.id.forum_question);
+                TextView text,owner;
+                text  = (TextView)v.findViewById(R.id.forum_question);
+                owner = (TextView)v.findViewById(R.id.textViewOwnerID);
                 ImageView imageView = (ImageView)v.findViewById(R.id.imageViewGotAnswer);
                 text.setText(model.getTitle());
+                String Author = "Author: ";
+                if(mAuth.getUid().equals(model.getUserID())) Author += "You";
+                else if(model.getMainMessage().getUserDisplayName()!=null) Author+=model.getMainMessage().getUserDisplayName();
+                else Author+=model.getMainMessage().getUserEmail();
+                owner.setText(Author);
                 RelativeLayout forum = (RelativeLayout)v.findViewById(R.id.dsForum);
                 forum.setOnClickListener(new View.OnClickListener() {
                     @Override

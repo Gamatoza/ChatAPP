@@ -8,39 +8,56 @@ android:background="#FFFFFF"
 tools:context=".ViewQuestionActivity"
     >
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="392dp"
-        android:layout_height="110dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="16dp"
-        android:textSize="25sp" />
+    <LinearLayout
+        android:id="@+id/linearHider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:padding="10dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="16dp"
+            android:hint="Какой то заголовок"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="Какое то описание"
+            android:textSize="15sp"
+            />
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/list_of_messages"
         android:layout_width="wrap_content"
-        android:layout_height="543dp"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/text_layout"
+        android:layout_below="@+id/linearHider"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="128dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="16dp"
-        android:layout_toEndOf="@+id/textViewTitle"
+        android:layout_toEndOf="@+id/linearHider"
         android:background="#FFFFFF"
         android:divider="@color/whiteBackground"
         android:dividerHeight="12dp"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
         android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"></ListView>
+        android:transcriptMode="alwaysScroll" />
 
     <ImageView
         android:id="@+id/emoji_button"

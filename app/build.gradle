@@ -61,6 +61,7 @@ dependencies {
     //Glide - uses to convert url into image to imageView
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }
 
 apply plugin: 'com.android.application'

@@ -38,4 +38,6 @@ public class Dialog1 extends DialogFragment implements OnClickListener {
         super.onCancel(dialog);
         Log.d(LOG_TAG, "Dialog 1: onCancel");
     }
+
+
 }

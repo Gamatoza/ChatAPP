@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         loadUserInformation(); //load info into imageView & text
-        //!!!!!!!!!!!some troubles with unload to imageView
+        //!!!!!!!!!!!some troubles with load to imageView
 
         //save in firebase click listener
         findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
@@ -213,7 +213,7 @@ public class ProfileActivity extends AppCompatActivity {
         //!!!!!!! а может проблема в том что он неправильно получает, я хз
         if(user != null) {
             if (user.getPhotoUrl() != null) {
-                Glide.with(this)
+                Glide.with(ProfileActivity.this)
                         .load(user.getPhotoUrl().toString())
                         .into(imageView);
             }

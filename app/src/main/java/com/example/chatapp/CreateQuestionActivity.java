@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,7 +19,6 @@ import java.util.List;
 
 public class CreateQuestionActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference myRef;
 
@@ -33,8 +33,6 @@ public class CreateQuestionActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Forums");
-
-        mAuth = FirebaseAuth.getInstance();
 
         //обработчик кнопки
         //пушит в Forums новый вопрос
@@ -53,14 +51,13 @@ public class CreateQuestionActivity extends AppCompatActivity {
                     contentEditText.requestFocus();
                     return;
                 }
-                final String key = myRef.push().getKey();
-                Question question = new Question(key, mAuth.getUid());
-                question.setTitle(Title);
-                question.setMainMessage(new Message(
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                        Content, question.getStateTime())
-                );
-                myRef.child(key).setValue(question);
+                final String pushKey = myRef.push().getKey();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                Question question = new Question(pushKey, user.getUid(),Title,new Message(
+                        Content,
+                        user
+                ));
+                myRef.child(pushKey).setValue(question);
 
                 //после создания переходит обратно в мейн
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
