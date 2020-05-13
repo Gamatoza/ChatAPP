@@ -53,7 +53,7 @@ public class ChangeMessageActivity extends AppCompatActivity {
                     }
                 });
 
-        findViewById(R.id.btnChange).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

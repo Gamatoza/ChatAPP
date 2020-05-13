@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,7 +39,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private ImageView emojiButton, submitButton;        //Два изображения, отправка и вызов смайлов
     private EmojIconActions emojIconActions;            //Окно где был выбран смайл
 
-    private String FORUM_ID;                                 //ID вопроса, передается с нажатия на вопрос
+    private String FORUM_ID;                            //ID вопроса, передается с нажатия на вопрос
     private Question currentQuestion;                   //Сам вопрос
     private Boolean isAuthor = false;                   //Проверка на авторство
 
@@ -152,6 +153,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
 
+
                 //Получаем id удаления сообщения и ответа
                 final ImageView rateImageView;
                 rateImageView = v.findViewById(R.id.imageViewRate);
@@ -159,7 +161,11 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 RelativeLayout relativeLayout;
                 relativeLayout = v.findViewById(R.id.dsMessage);
 
+                if(model.getUserID().equals(user.getUid())) mess_user.setText("You");
+                else if(model.getUserDisplayName()!=null)
                 mess_user.setText(model.getUserDisplayName());
+                else mess_user.setText(model.getUserEmail());
+
                 mess_text.setText(model.getText());
                 mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
 
@@ -209,8 +215,20 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 deleteImageView = v.findViewById(R.id.imageViewDelete);
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить
                 if(model.getUserID().equals(user.getUid())){
-
-
+                    //придумать как закинуть облачко на правую сторону
+                    relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            final MessageOptionsDialog dlg = new MessageOptionsDialog();
+                            Bundle args = new Bundle();
+                            args.putString("forum_key", FORUM_ID);
+                            args.putString("message_key",model.getId());
+                            dlg.setArguments(args);
+                            dlg.show(getFragmentManager(),"dlg");
+                            return false;
+                        }
+                    });
+                    /*
                     deleteImageView.setVisibility(View.VISIBLE);
                     final DeleteDialog dlg = new DeleteDialog();
 
@@ -223,9 +241,12 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             dlg.setArguments(args);
                             dlg.show(getFragmentManager(),"dlg");
                         }
-                    });
+                    });*/
 
-                }else deleteImageView.setVisibility(View.GONE);
+                }else {
+                    relativeLayout.setOnClickListener(null);
+                }
+                //else deleteImageView.setVisibility(View.GONE);
             }
         };
 

@@ -42,12 +42,14 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
                 intent.putExtra("forum_key",FORUM_KEY);
                 intent.putExtra("message_key",MESSAGE_KEY);
                 startActivity(intent);
+                dismiss();
                 break;
             case R.id.btnDelete:
                 FirebaseDatabase.getInstance().getReference()
                         .child("Messages")
                         .child(FORUM_KEY).child(MESSAGE_KEY)
                         .getRef().removeValue();
+                dismiss();
                 break;
         }
 
