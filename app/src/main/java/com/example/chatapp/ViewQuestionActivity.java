@@ -70,6 +70,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         //Достаем текущий форум и сразу назначаем вопрос
         //Таким образом он будет обновлятся, если вдруг автор решит изменить вопрос
+
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference()
                 .child("Forums").child(KEY);
         final TextView textViewTitle = (TextView)findViewById(R.id.textViewTitle);
@@ -168,9 +169,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
                             //Это надо как то упростить
                             if(currentQuestion.isDecided()) { //Если ответ уже есть
-                                currentQuestion.removeAnswer(); //Удаляет ответ
-                                if(currentQuestion.getOwnerID().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
-                                    rateImageView.setImageResource(R.drawable.star_off);    //Просто удаляем с него пометку
+                                if(currentQuestion.getAnswer().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
+                                    currentQuestion.removeAnswer();                         //Удаляет ответ
+                                    rateImageView.setImageResource(R.drawable.star_off);    //Удаляем пометку
                                 }
                                 else{                                                       //Иначе
                                     currentQuestion.setAnswer(model.getId());               //Ставим новый ответ
