@@ -1,3 +1,4 @@
+------NEXT------
 Вместо push в сообщениях делать setValue(IDФорума+idСообщения)
 Добавить изменение вопроса
 Добавить удаление вопроса
@@ -14,8 +15,3 @@
 После назначения ответа сообщения не обновляются
 Большой вопрос не помещается в TextView в ViewQuestionActivity
 Вопрос не снимается с ответа
-
------CRIT-----
-Вылетает при нажатии на звезду, model почему то пишет null или там Boolean
-Attempt to invoke virtual method 'boolean java.lang.String.equals(java.lang.Object)' on a null object reference
-172 строка в ViewQuestionActivity

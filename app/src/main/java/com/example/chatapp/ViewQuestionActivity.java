@@ -169,7 +169,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             //Это надо как то упростить
                             if(currentQuestion.isDecided()) { //Если ответ уже есть
                                 currentQuestion.removeAnswer(); //Удаляет ответ
-                                if(currentQuestion.getAnswer().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
+                                if(currentQuestion.getOwnerID().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
                                     rateImageView.setImageResource(R.drawable.star_off);    //Просто удаляем с него пометку
                                 }
                                 else{                                                       //Иначе
