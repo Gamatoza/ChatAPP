@@ -1,4 +1,4 @@
-package com.example.chatapp;
+package com.example.chatapp.dialogs;
 
 
 import android.app.AlertDialog;
@@ -9,6 +9,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.chatapp.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

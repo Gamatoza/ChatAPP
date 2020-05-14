@@ -1,4 +1,4 @@
-package com.example.chatapp;
+package com.example.chatapp.dialogs;
 
 
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.chatapp.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;

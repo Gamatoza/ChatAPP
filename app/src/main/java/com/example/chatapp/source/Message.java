@@ -1,10 +1,10 @@
-package com.example.chatapp;
+package com.example.chatapp.source;
 
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
-public class Message implements UserInformation{
+public class Message implements UserInformation {
 
     private String id;              //идентификатор сообщения       g
     private String text;            //внутренний текст              gs
@@ -143,7 +143,7 @@ public class Message implements UserInformation{
 
     //endregion
 
-    void setCurrentTime(){
+    public void setCurrentTime(){
         this.messageTime = new Date().getTime();
     }
 

@@ -1,4 +1,4 @@
-package com.example.chatapp;
+package com.example.chatapp.dialogs;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
+import com.example.chatapp.activities.ChangeMessageActivity;
+import com.example.chatapp.R;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MessageOptionsDialog extends DialogFragment implements OnClickListener {
@@ -38,7 +37,7 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnChange:
-                Intent intent = new Intent(getActivity(),ChangeMessageActivity.class);
+                Intent intent = new Intent(getActivity(), ChangeMessageActivity.class);
                 intent.putExtra("forum_key",FORUM_KEY);
                 intent.putExtra("message_key",MESSAGE_KEY);
                 startActivity(intent);

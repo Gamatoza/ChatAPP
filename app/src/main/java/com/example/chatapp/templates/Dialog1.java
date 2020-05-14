@@ -1,4 +1,4 @@
-package com.example.chatapp;
+package com.example.chatapp.templates;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.example.chatapp.R;
 
 public class Dialog1 extends DialogFragment implements OnClickListener {
 

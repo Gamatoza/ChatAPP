@@ -1,7 +1,6 @@
-package com.example.chatapp;
+package com.example.chatapp.source;
 
 import java.util.Date;
-import java.util.List;
 
 ///Класс форума или вопроса
 ///Предназначен для хранения и отображения информации о текущем вопросе, форуме, ответе и т.п.

@@ -1,4 +1,4 @@
-package com.example.chatapp;
+package com.example.chatapp.source;
 
 public interface UserInformation {
     String getUserDisplayName();
