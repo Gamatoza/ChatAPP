@@ -17,11 +17,16 @@ import com.example.chatapp.R;
 import com.example.chatapp.dialogs.MessageOptionsDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
+import com.example.chatapp.source.QuestionInfo;
+import com.example.chatapp.source.userlibrary.FirebaseUserLibraryLoader;
+import com.example.chatapp.source.userlibrary.Purpose;
+import com.example.chatapp.source.userlibrary.UserLibrary;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +34,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import android.text.format.DateFormat;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
@@ -68,6 +76,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
         }
     }
 
+    Map<String,Question> History;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +93,27 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         activity_question = findViewById(R.id.activity_question);
 
+        //UserLibrary library = new UserLibrary(user.getUid());
+        //final FirebaseUserLibraryLoader FULL = new FirebaseUserLibraryLoader(library);
+
+
+        final DatabaseReference HistoryRef = FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid())
+                .child("History");
+        /*History = new HashMap<>();
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        History = (HashMap<String,Question>) dataSnapshot.getValue();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });*/
+
         //region Получение текущего вопроса и назначение заголовка с вопросом
         //Достаем текущий форум и сразу назначаем вопрос
         //Таким образом он будет обновлятся, если вдруг автор решит изменить вопрос
@@ -95,7 +126,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 currentQuestion = dataSnapshot.getValue(Question.class);
-
+                QuestionInfo qo = currentQuestion.generateInfo();
+                qo.setCurrentTime();
+                HistoryRef.child(currentQuestion.getId()).setValue(qo);
+                //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
                 textViewTitle.setText(currentQuestion.getTitle());
                 textViewDescription.setText(currentQuestion.getMainMessage().getText());
 

@@ -6,7 +6,7 @@ import java.util.Date;
 ///Предназначен для хранения и отображения информации о текущем вопросе, форуме, ответе и т.п.
 
 
-public class Question {
+public class Question implements Cloneable {
 
 
 
@@ -96,6 +96,11 @@ public class Question {
 
     //endregion
 
+    @Override
+    public Question clone() throws CloneNotSupportedException {
+        return (Question) super.clone();
+    }
+
     public Boolean isDecided(){
         return  isDecided;
     }
@@ -103,5 +108,12 @@ public class Question {
     public void removeAnswer(){
         isDecided = false;
         answerMessageID = null;
+    }
+
+    public QuestionInfo generateInfo() {
+            String name;
+            if(mainMessage.getUserDisplayName() != null) name = mainMessage.getUserDisplayName();
+            else name = mainMessage.getUserEmail();
+            return new QuestionInfo(name,userID,id,title,isDecided,answerMessageID,stateTime);
     }
 }

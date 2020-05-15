@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
-public class Message implements UserInformation {
+public class Message implements UserInformation, Cloneable {
 
     private String id;              //идентификатор сообщения       g
     private String text;            //внутренний текст              gs
@@ -43,7 +43,9 @@ public class Message implements UserInformation {
         this.text = text;
         this.userID = user.getUid();
         this.userEmail = user.getEmail();
+        if(user.getDisplayName() != null)
         this.userDisplayName = user.getDisplayName();
+        if(user.getPhotoUrl() != null)
         this.userAvatarURL = user.getPhotoUrl().toString();
     }//специально для Question
 
@@ -139,6 +141,11 @@ public class Message implements UserInformation {
     @Override
     public void setUserAvatarURL(String userAvatarURL) {
         this.userAvatarURL = userAvatarURL;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     //endregion

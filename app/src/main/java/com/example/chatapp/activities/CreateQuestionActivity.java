@@ -56,7 +56,11 @@ public class CreateQuestionActivity extends AppCompatActivity {
                         user
                 ));
                 myRef.child(pushKey).setValue(question);
-
+                final DatabaseReference ChangeRef = FirebaseDatabase.getInstance().getReference()
+                        .child("UsersLibrary")
+                        .child(user.getUid())
+                        .child("Created");
+                ChangeRef.child(question.getId()).setValue(question.generateInfo());
                 //после создания переходит обратно в мейн
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

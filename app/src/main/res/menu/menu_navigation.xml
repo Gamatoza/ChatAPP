@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/created"
+        android:title="Созданные"
+        android:icon="@drawable/ic_create"/>
+
+    <item
+        android:id="@+id/tracked"
+        android:title="Отслеживаемые"
+        android:icon="@drawable/ic_track" />
+
+    <item
+        android:id="@+id/history"
+        android:title="История"
+        android:icon="@drawable/ic_history" />
+</menu>
