@@ -39,6 +39,8 @@ public class ForumActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_questions);
+
+
         adapter = new FirebaseListAdapter<Question>
                 (this,Question.class,R.layout.list_questions,myRef.child("Forums")) {
             @Override

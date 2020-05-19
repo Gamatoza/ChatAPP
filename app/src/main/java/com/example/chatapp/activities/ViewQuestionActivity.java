@@ -18,15 +18,11 @@ import com.example.chatapp.dialogs.MessageOptionsDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
-import com.example.chatapp.source.userlibrary.FirebaseUserLibraryLoader;
-import com.example.chatapp.source.userlibrary.Purpose;
-import com.example.chatapp.source.userlibrary.UserLibrary;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import android.text.format.DateFormat;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
@@ -128,7 +123,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 currentQuestion = dataSnapshot.getValue(Question.class);
                 QuestionInfo qo = currentQuestion.generateInfo();
                 qo.setCurrentTime();
-                HistoryRef.child(currentQuestion.getId()).setValue(qo);
+                //currentQuestion.getId() если нужно что бы оно не добовляло нового
+                HistoryRef.push().setValue(qo);
                 //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
                 textViewTitle.setText(currentQuestion.getTitle());
                 textViewDescription.setText(currentQuestion.getMainMessage().getText());
@@ -179,7 +175,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_item, ref) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_messages, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
@@ -248,8 +244,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     });
                 }
 
-                final ImageView deleteImageView;
-                deleteImageView = v.findViewById(R.id.imageViewDelete);
+                //final ImageView deleteImageView;
+                //deleteImageView = v.findViewById(R.id.imageViewDelete);
+
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить
                 if(model.getUserID().equals(user.getUid())){
                     //придумать как закинуть облачко на правую сторону

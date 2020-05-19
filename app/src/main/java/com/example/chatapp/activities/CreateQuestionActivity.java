@@ -10,6 +10,7 @@ import android.widget.EditText;
 import com.example.chatapp.R;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
+import com.example.chatapp.source.QuestionInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -60,7 +61,10 @@ public class CreateQuestionActivity extends AppCompatActivity {
                         .child("UsersLibrary")
                         .child(user.getUid())
                         .child("Created");
-                ChangeRef.child(question.getId()).setValue(question.generateInfo());
+
+                //question.generateInfo()
+                ChangeRef.push().setValue(question.getId());
+
                 //после создания переходит обратно в мейн
                 Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

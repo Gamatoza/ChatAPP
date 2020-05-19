@@ -31,9 +31,7 @@ public class Question implements Cloneable {
     }
 
     //region Constructors
-
     public Question() { }
-
 
     public Question(String id, String userID) {
         this.id = id;
@@ -112,8 +110,10 @@ public class Question implements Cloneable {
 
     public QuestionInfo generateInfo() {
             String name;
-            if(mainMessage.getUserDisplayName() != null) name = mainMessage.getUserDisplayName();
-            else name = mainMessage.getUserEmail();
-            return new QuestionInfo(name,userID,id,title,isDecided,answerMessageID,stateTime);
+            if(mainMessage.getUserDisplayName() != null)
+                name = mainMessage.getUserDisplayName();
+            else
+                name = mainMessage.getUserEmail();
+            return new QuestionInfo(name,getUserID(),getId(),getTitle(),isDecided(),getAnswer(),getStateTime());
     }
 }

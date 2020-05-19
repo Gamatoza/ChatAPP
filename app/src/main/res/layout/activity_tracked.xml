@@ -23,6 +23,7 @@
         android:orientation="horizontal">
 
         <ListView
+            android:id="@+id/contentListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

@@ -12,7 +12,8 @@
         <activity android:name=".activities.userlibrary.HistoryActivity"></activity>
         <activity android:name=".activities.userlibrary.TrackedActivity" />
         <activity android:name=".activities.userlibrary.CreatedActivity" />
-        <activity android:name=".activities.ChangeMessageActivity" />
+        <activity android:name=".activities.ChangeMessageActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activities.ForumActivity" />
         <activity android:name=".activities.CreateQuestionActivity" />
         <activity android:name=".activities.ViewQuestionActivity" />

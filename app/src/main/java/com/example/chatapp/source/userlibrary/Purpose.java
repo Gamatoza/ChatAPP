@@ -11,6 +11,6 @@ public enum Purpose {
         this.content = content;
     }
 
-    String get(){return content;}
+    public String get(){return content;}
 
 }
