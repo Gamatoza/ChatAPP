@@ -88,26 +88,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         activity_question = findViewById(R.id.activity_question);
 
-        //UserLibrary library = new UserLibrary(user.getUid());
-        //final FirebaseUserLibraryLoader FULL = new FirebaseUserLibraryLoader(library);
-
-
         final DatabaseReference HistoryRef = FirebaseDatabase.getInstance().getReference()
                 .child("UsersLibrary")
                 .child(user.getUid())
                 .child("History");
-        /*History = new HashMap<>();
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        History = (HashMap<String,Question>) dataSnapshot.getValue();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });*/
 
         //region Получение текущего вопроса и назначение заголовка с вопросом
         //Достаем текущий форум и сразу назначаем вопрос
@@ -121,10 +105,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 currentQuestion = dataSnapshot.getValue(Question.class);
-                QuestionInfo qo = currentQuestion.generateInfo();
-                qo.setCurrentTime();
                 //currentQuestion.getId() если нужно что бы оно не добовляло нового
-                HistoryRef.push().setValue(qo);
+                HistoryRef.push().setValue(currentQuestion.getId());
                 //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
                 textViewTitle.setText(currentQuestion.getTitle());
                 textViewDescription.setText(currentQuestion.getMainMessage().getText());

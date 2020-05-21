@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,22 +15,24 @@ import android.widget.TextView;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.ViewQuestionActivity;
+import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.example.chatapp.source.userlibrary.Purpose;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class TrackedActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private ListView listView;
     private DatabaseReference myRef;
     private FirebaseUser user;
-    private FirebaseListAdapter<QuestionInfo> adapter;
 
 
     @Override
@@ -37,6 +40,7 @@ public class TrackedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracked);
 
+        mAuth = FirebaseAuth.getInstance();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -65,40 +69,68 @@ public class TrackedActivity extends AppCompatActivity {
                 return false;
             }
         });
-        addAddapter(Purpose.Tracked);
+        updateUI();
     }
 
-    void addAddapter(Purpose p){
-        mAuth = FirebaseAuth.getInstance();
-        listView = (ListView)findViewById(R.id.contentListView);
-        myRef = FirebaseDatabase.getInstance().getReference();
+    private void updateUI(){
+
+        ListView list = findViewById(R.id.listViewContent);
+
         user = mAuth.getCurrentUser();
 
-        adapter = new FirebaseListAdapter<QuestionInfo>
-                (this, QuestionInfo.class, R.layout.list_questions, myRef.child("UsersLibrary").child(user.getUid()).child(p.get())) {
+        myRef = FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid());
+
+        FirebaseListAdapter<String> lightAdapter = new FirebaseListAdapter<String>(this, String.class, R.layout.list_questions, myRef.child("Tracked")) {
             @Override
-            protected void populateView(View v, final QuestionInfo model, int position) {
-                TextView text, owner;
+            protected void populateView(final View v, final String model, int position) {
+                final TextView text, owner;
+                final ImageView imageView;
+                final RelativeLayout forum;
+
                 text = (TextView) v.findViewById(R.id.forum_question);
                 owner = (TextView) v.findViewById(R.id.textViewOwnerID);
-                ImageView imageView = (ImageView) v.findViewById(R.id.imageViewGotAnswer);
-                text.setText(model.getTitle());
-                String Author = "Author: " + model.getUserName();
-                owner.setText(Author);
-                RelativeLayout forum = (RelativeLayout) v.findViewById(R.id.dsForum);
-                forum.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(TrackedActivity.this, ViewQuestionActivity.class);
-                        intent.putExtra("forumRef", model.getQuestionID());
-                        startActivity(intent);
-                    }
-                });
-                if (model.isDecided()) imageView.setImageResource(R.drawable.star_on);
-                else imageView.setImageResource(R.drawable.star_off);
+                imageView = (ImageView) v.findViewById(R.id.imageViewGotAnswer);
+                forum = (RelativeLayout) v.findViewById(R.id.dsForum);
+                if(model.getClass() == String.class) {
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("Forums")
+                            .child(model).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Question qo = dataSnapshot.getValue(Question.class);
+                                final QuestionInfo qi = qo.generateInfo();
+                                text.setText(qi.getTitle());
+                                String Author = "Author: ";
+                                if (user.getUid().equals(qi.getUserID())) Author += "You";
+                                else Author += qi.getUserName();
+                                owner.setText(Author);
+
+                                forum.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(TrackedActivity.this, ViewQuestionActivity.class);
+                                        intent.putExtra("forumRef", qi.getQuestionID());
+                                        startActivity(intent);
+                                    }
+                                });
+                                if (qi.isDecided()) imageView.setImageResource(R.drawable.star_on);
+                                else imageView.setImageResource(R.drawable.star_off);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.w("TAG", "Failed to read value.");
+                        }
+                    });
+                }
             }
         };
-        listView.setAdapter(adapter);
 
+        list.setAdapter(lightAdapter);
     }
+
 }

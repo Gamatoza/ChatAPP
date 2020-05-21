@@ -23,11 +23,10 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contentRecyclerView"
-            android:layout_width="wrap_content"
+        <ListView
+            android:id="@+id/listViewContent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
     </LinearLayout>
     
 </RelativeLayout>

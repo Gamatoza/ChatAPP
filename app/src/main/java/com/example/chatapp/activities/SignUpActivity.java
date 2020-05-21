@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -74,8 +76,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar.setVisibility(View.GONE);
                         if(task.isSuccessful()) {
-                            /*UserLibrary us = new UserLibrary(task.getResult().getUser().getUid());
-                            FirebaseDatabase.getInstance().getReference().child("UsersLibrary").child(us.getOwner()).push().setValue(us);*/
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                                    .child("UsersLibrary")
+                                    .child(mAuth.getUid());
+
+                            ref.child("Created").setValue("");
+                            ref.child("Tracked").setValue("");
+                            ref.child("History").setValue("");
                             finish();
                             Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -44,13 +45,14 @@ public class CreatedActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private FirebaseUser user;
-    private FirebaseListAdapter<QuestionInfo> adapter;
-    private ArrayList<QuestionInfo> arr;
+
+    String LOG_TAG = "Логи";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_created);
+        super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -62,18 +64,18 @@ public class CreatedActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.created:
                         return true;
                     case R.id.tracked:
                         finish();
-                        startActivity(new Intent(getApplicationContext(),TrackedActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), TrackedActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.history:
                         finish();
-                        startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
 
                 }
@@ -85,69 +87,65 @@ public class CreatedActivity extends AppCompatActivity {
         updateUI();
     }
 
-    private FirebaseListAdapter<String> LightAdapter;
+    private void updateUI() {
 
-    private void updateUI(){
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.contentRecyclerView);
-
-        FirebaseRecyclerAdapter<QuestionInfo,TaskViewHolder> adapter;
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
+        ListView list = findViewById(R.id.listViewContent);
 
         user = mAuth.getCurrentUser();
 
         myRef = FirebaseDatabase.getInstance().getReference()
                 .child("UsersLibrary")
-                .child(user.getUid())
-                .child("Created");
-        //QuestionInfo
-        /*
-        adapter = new FirebaseRecyclerAdapter<QuestionInfo, TaskViewHolder>(
-                QuestionInfo.class,
-                R.layout.list_questions,
-                TaskViewHolder.class,
-                myRef)
-        {
-            @Override
-            protected void populateViewHolder(TaskViewHolder taskViewHolder, final QuestionInfo model, int i) {
-                String Author = "Author: " + model.getUserName();
-                taskViewHolder.text.setText(model.getTitle());
-                taskViewHolder.owner.setText(Author);
+                .child(user.getUid());
 
-                taskViewHolder.forum.setOnClickListener(new View.OnClickListener() {
+        FirebaseListAdapter<String> lightAdapter = new FirebaseListAdapter<String>(this, String.class, R.layout.list_questions, myRef.child("Created")) {
+            @Override
+            protected void populateView(final View v, final String model, int position) {
+
+                final TextView text, owner;
+                final ImageView imageView;
+                final RelativeLayout forum;
+
+                text = (TextView) v.findViewById(R.id.forum_question);
+                owner = (TextView) v.findViewById(R.id.textViewOwnerID);
+                imageView = (ImageView) v.findViewById(R.id.imageViewGotAnswer);
+                forum = (RelativeLayout) v.findViewById(R.id.dsForum);
+
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Forums")
+                        .child(model).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(CreatedActivity.this, ViewQuestionActivity.class);
-                        intent.putExtra("forumRef", model.getQuestionID());
-                        startActivity(intent);
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            Question qo = dataSnapshot.getValue(Question.class);
+                            final QuestionInfo qi = qo.generateInfo();
+                            text.setText(qi.getTitle());
+                            String Author = "Author: ";
+                            if (user.getUid().equals(qi.getUserID())) Author += "You";
+                            else Author += qi.getUserName();
+                            owner.setText(Author);
+
+                            forum.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(CreatedActivity.this, ViewQuestionActivity.class);
+                                    intent.putExtra("forumRef", qi.getQuestionID());
+                                    startActivity(intent);
+                                }
+                            });
+                            if (qi.isDecided()) imageView.setImageResource(R.drawable.star_on);
+                            else imageView.setImageResource(R.drawable.star_off);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w("TAG", "Failed to read value.");
                     }
                 });
-                if (model.isDecided() != null) {
-                    if (model.isDecided())
-                        taskViewHolder.imageView.setImageResource(R.drawable.star_on);
-                    else taskViewHolder.imageView.setImageResource(R.drawable.star_off);
-                }
             }
+        };
 
-        };*/
-
-        //recyclerView.setAdapter(adapter);
-
-    }
-
-    private static class TaskViewHolder extends RecyclerView.ViewHolder{
-        TextView text, owner;
-        ImageView imageView;
-        RelativeLayout forum;
-        public TaskViewHolder(@NonNull View itemView) {
-            super(itemView);
-            text = (TextView) itemView.findViewById(R.id.forum_question);
-            owner = (TextView) itemView.findViewById(R.id.textViewOwnerID);
-            imageView = (ImageView) itemView.findViewById(R.id.imageViewGotAnswer);
-            forum = (RelativeLayout) itemView.findViewById(R.id.dsForum);
-        }
+        list.setAdapter(lightAdapter);
     }
 
 }

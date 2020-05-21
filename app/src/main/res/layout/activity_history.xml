@@ -24,10 +24,9 @@
         android:orientation="horizontal">
 
         <ListView
-            android:id="@+id/contentListView"
-            android:layout_width="wrap_content"
+            android:id="@+id/listViewContent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-
     </LinearLayout>
 
 
