@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.ViewQuestionActivity;
+import com.example.chatapp.dialogs.QuestionsOptionsDialog;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -86,7 +87,7 @@ public class CreatedActivity extends AppCompatActivity {
 
         FirebaseListAdapter<String> lightAdapter = new FirebaseListAdapter<String>(this, String.class, R.layout.list_questions, myRef.child("Created")) {
             @Override
-            protected void populateView(final View v, final String model, int position) {
+            protected void populateView(final View v, final String model, final int position) {
 
                 final TextView text, owner;
                 final ImageView imageView;
@@ -97,19 +98,32 @@ public class CreatedActivity extends AppCompatActivity {
                 imageView = (ImageView) v.findViewById(R.id.imageViewIsTracked);
                 forum = (RelativeLayout) v.findViewById(R.id.dsForum);
 
+
+
                 FirebaseDatabase.getInstance().getReference()
                         .child("Forums")
                         .child(model).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            Question qo = dataSnapshot.getValue(Question.class);
+                            final Question qo = dataSnapshot.getValue(Question.class);
                             final QuestionInfo qi = qo.generateInfo();
                             text.setText(qi.getTitle());
-                            String Author = "Author: ";
-                            if (user.getUid().equals(qi.getUserID())) Author += "You";
-                            else Author += qi.getUserName();
-                            owner.setText(Author);
+                            owner.setText("Author: You");
+
+                            forum.setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    final QuestionsOptionsDialog dlg = new QuestionsOptionsDialog();
+                                    Bundle args = new Bundle();
+                                    args.putString("forum_key", qo.getId());
+                                    args.putString("lib_key",getRef(position).getKey());
+                                    args.putString("user_key",user.getUid());
+                                    dlg.setArguments(args);
+                                    dlg.show(getFragmentManager(),"dlg");
+                                    return true;
+                                }
+                            });
 
                             forum.setOnClickListener(new View.OnClickListener() {
                                 @Override

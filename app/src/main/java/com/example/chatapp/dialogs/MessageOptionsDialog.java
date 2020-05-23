@@ -27,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/*
+* AND HERE TOO
+*/
 public class MessageOptionsDialog extends DialogFragment implements OnClickListener {
 
     final String LOG_TAG = "myLogs";

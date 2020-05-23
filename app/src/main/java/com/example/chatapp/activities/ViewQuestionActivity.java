@@ -37,7 +37,13 @@ import java.util.Map;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
-
+/*
+whatever you think
+whatever you don't want to change
+STAY THE FUCK OUT OF HERE
+DON'T TOUCH IT
+HERE EVERYTHING IS KEPT ON THE WILL OF GOD
+ */
 public class ViewQuestionActivity extends AppCompatActivity{
 
     private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
