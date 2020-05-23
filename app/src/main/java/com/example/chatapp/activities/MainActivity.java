@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.example.chatapp.R;
 import com.example.chatapp.activities.userlibrary.CreatedActivity;
 import com.example.chatapp.source.QuestionInfo;
+import com.example.chatapp.source.userlibrary.LocalUserLibrary;
+import com.example.chatapp.source.userlibrary.LocalUserLibraryUpdater;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
 
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             startActivity(new Intent(this,LoginActivity.class));
         }
+
+
 
         findViewById(R.id.buttonChangePhoto).setOnClickListener(this);
         findViewById(R.id.buttonViewForum).setOnClickListener(this);

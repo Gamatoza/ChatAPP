@@ -1,4 +1,4 @@
-package com.example.chatapp.source.userlibrary;
+package com.example.chatapp.source.userlibrary.old;
 
 import androidx.annotation.NonNull;
 
@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Filler implements Cloneable {                           //Наполнитель
-
-    private Purpose purpose;
 
     @NonNull
     @Override
@@ -21,12 +19,6 @@ public class Filler implements Cloneable {                           //Напо�
     private Map<String, QuestionInfo> content;   //Ключ - pushID который закидывается в закладку
 
     public Filler(){
-        purpose = Purpose.Null;
-        content = new HashMap<>();
-    }
-
-    public Filler(Purpose p){
-        purpose = p;
         content = new HashMap<>();
     }
 
@@ -59,15 +51,6 @@ public class Filler implements Cloneable {                           //Напо�
             }
         }
         return buf;
-    }
-
-
-    public Purpose getPurpose() {
-        return purpose;
-    }
-
-    public void setPurpose(Purpose purpose) {
-        this.purpose = purpose;
     }
 
 }

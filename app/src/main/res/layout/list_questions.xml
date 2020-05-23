@@ -4,7 +4,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp">
+    android:layout_margin="10dp"
+    android:background="@color/whiteBackground"
+    >
 
     <TextView
         android:id="@+id/forum_question"
@@ -30,7 +32,7 @@
         android:hint="ID автора"/>
 
     <ImageView
-        android:id="@+id/imageViewGotAnswer"
+        android:id="@+id/imageViewIsTracked"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"

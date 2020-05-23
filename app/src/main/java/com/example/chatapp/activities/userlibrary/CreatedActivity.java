@@ -2,31 +2,22 @@ package com.example.chatapp.activities.userlibrary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chatapp.R;
-import com.example.chatapp.activities.ProfileActivity;
 import com.example.chatapp.activities.ViewQuestionActivity;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
-import com.example.chatapp.source.userlibrary.Purpose;
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,10 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class CreatedActivity extends AppCompatActivity {
 
@@ -107,7 +94,7 @@ public class CreatedActivity extends AppCompatActivity {
 
                 text = (TextView) v.findViewById(R.id.forum_question);
                 owner = (TextView) v.findViewById(R.id.textViewOwnerID);
-                imageView = (ImageView) v.findViewById(R.id.imageViewGotAnswer);
+                imageView = (ImageView) v.findViewById(R.id.imageViewIsTracked);
                 forum = (RelativeLayout) v.findViewById(R.id.dsForum);
 
                 FirebaseDatabase.getInstance().getReference()

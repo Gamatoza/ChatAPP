@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 public class ChangeMessageActivity extends AppCompatActivity {
 
     public String FORUM_KEY;
@@ -43,7 +45,7 @@ public class ChangeMessageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentMessage = dataSnapshot.getValue(Message.class);
-                        currentMessage.setCurrentTime();
+                        currentMessage.setMessageTime(new Date().getTime());
                         text.setText(currentMessage.getText());
                     }
 

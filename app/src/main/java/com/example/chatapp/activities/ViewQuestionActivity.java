@@ -4,9 +4,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -17,9 +19,9 @@ import com.example.chatapp.R;
 import com.example.chatapp.dialogs.MessageOptionsDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
-import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +38,7 @@ import java.util.Map;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
-public class ViewQuestionActivity extends AppCompatActivity {
+public class ViewQuestionActivity extends AppCompatActivity{
 
     private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
     private RelativeLayout activity_question;           //Основной бэкграунд
@@ -53,6 +55,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private FirebaseUser user;                          //Текущий пользователь
     private FirebaseDatabase database;                  //БД
     private DatabaseReference mainRef;                  //Ссылка на главный рут
+
+    //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
     private static String LOG_TAG;
 
@@ -99,13 +103,19 @@ public class ViewQuestionActivity extends AppCompatActivity {
         final TextView textViewTitle,textViewDescription;
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewDescription = findViewById(R.id.textViewDescription);
-
         mainRef.child("Forums").child(FORUM_ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 currentQuestion = dataSnapshot.getValue(Question.class);
+
                 //currentQuestion.getId() если нужно что бы оно не добовляло нового
+                /*
+                Date now = new Date();
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
+                //.child(f.format(now)) если нужно подстраивать под время
+                */
                 HistoryRef.push().setValue(currentQuestion.getId());
                 //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
                 textViewTitle.setText(currentQuestion.getTitle());
@@ -114,6 +124,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 //Проверяет является ли автором зашедший пользователь
                 if(currentQuestion.getUserID().equals(user.getUid()))
                     isAuthor = true;
+                displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
+
             }
 
             @Override
@@ -147,7 +159,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         //endregion
 
-        displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
 
     }
 
@@ -157,10 +168,25 @@ public class ViewQuestionActivity extends AppCompatActivity {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.list_messages, ref) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
+
+                final RelativeLayout relativeLayout;
+                relativeLayout = v.findViewById(R.id.dsMessage);
+                //inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                //Если это сообщение является ответом, оно помечается
+                if(model.getId().equals(currentQuestion.getAnswer())){
+                    v.setBackgroundResource(R.color.colorHaveAnswer);
+                  //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
+
+                }else {
+                    v.setBackgroundResource(R.color.colorNoAnswer);
+                   // v = inflater.inflate(R.layout.left_mes,relativeLayout);
+
+                }
+
                 //Назначение информации в облачке
                 TextView mess_user,mess_time;
                 final BubbleTextView mess_text;
@@ -168,13 +194,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
 
-
-                //Получаем id удаления сообщения и ответа
-                final ImageView rateImageView;
-                rateImageView = v.findViewById(R.id.imageViewRate);
-
-                RelativeLayout relativeLayout;
-                relativeLayout = v.findViewById(R.id.dsMessage);
 
                 if(model.getUserID().equals(user.getUid())) mess_user.setText("You");
                 else if(model.getUserDisplayName()!=null)
@@ -184,15 +203,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 mess_text.setText(model.getText());
                 mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
 
-                //Если это сообщение является ответом, оно помечается
-                if(model.getId().equals(currentQuestion.getAnswer())){
-                    rateImageView.setVisibility(View.VISIBLE);
-                    rateImageView.setImageResource(R.drawable.star_on);
-                }else rateImageView.setImageResource(R.drawable.star_off);
+
 
                 //Если текущий пользователь является автором вопроса
                 if(isAuthor){
-
                     //Проверка
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -200,48 +214,23 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             Snackbar.make(activity_question, "Это сообщение имеет id = " + model.getId(), Snackbar.LENGTH_SHORT).show();
                         }
                     });
-
-                    //Обработчик для назначения ответа
-                    rateImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            //Это надо как то упростить
-                            if(currentQuestion.isDecided()) { //Если ответ уже есть
-                                if(currentQuestion.getAnswer().equals(model.getId())) {     //Если нажато сообщение что уже является ответом
-                                    currentQuestion.removeAnswer();                         //Удаляет ответ
-                                    rateImageView.setImageResource(R.drawable.star_off);    //Удаляем пометку
-                                }
-                                else{                                                       //Иначе
-                                    currentQuestion.setAnswer(model.getId());               //Ставим новый ответ
-                                    rateImageView.setImageResource(R.drawable.star_on);     //Ставим пометку
-                                }
-                            }
-                            else {                                                          //Если ответа нет
-                                currentQuestion.setAnswer(model.getId());                   //Ставим его
-                                rateImageView.setImageResource(R.drawable.star_on);         //Ставим пометку
-                            }
-                            FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_ID).setValue(currentQuestion);
-                        }
-                    });
                 }
 
-                //final ImageView deleteImageView;
-                //deleteImageView = v.findViewById(R.id.imageViewDelete);
-
-                //Если пользователь является тем, кто написал это сообщение, то может его удалить
+                //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if(model.getUserID().equals(user.getUid())){
                     //придумать как закинуть облачко на правую сторону
-                    relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public boolean onLongClick(View v) {
+                        public void onClick(View v) {
                             final MessageOptionsDialog dlg = new MessageOptionsDialog();
                             Bundle args = new Bundle();
                             args.putString("forum_key", FORUM_ID);
                             args.putString("message_key",model.getId());
+                            args.putBoolean("is_author",isAuthor);
+
                             dlg.setArguments(args);
                             dlg.show(getFragmentManager(),"dlg");
-                            return false;
                         }
                     });
                     /*

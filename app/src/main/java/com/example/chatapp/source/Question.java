@@ -27,7 +27,7 @@ public class Question implements Cloneable {
 
     {
         this.stateTime = new Date().getTime();
-        isDecided = false; //????
+        isDecided = false;
     }
 
     //region Constructors
@@ -36,6 +36,7 @@ public class Question implements Cloneable {
     public Question(String id, String userID) {
         this.id = id;
         this.userID = userID;
+        isDecided = false;
     }
 
     public Question(String id, String userID, String title, Message mainMessage) {
@@ -43,13 +44,16 @@ public class Question implements Cloneable {
         this.title = title;
         this.mainMessage = mainMessage;
         mainMessage.setMessageTime(stateTime);
+        isDecided = false;
     }
+
 
     public Question(Question parent) {
         this.id = parent.getId();
         this.userID = parent.getUserID();
         this.title = parent.getTitle();
         this.mainMessage = parent.getMainMessage();
+        isDecided = false;
     }
     //endregion
 
@@ -83,6 +87,8 @@ public class Question implements Cloneable {
         return stateTime;
     }
 
+    public void resetResponse(){isDecided = false; answerMessageID = null;}
+
     public String getAnswer() {
         return answerMessageID;
     }
@@ -100,6 +106,9 @@ public class Question implements Cloneable {
     }
 
     public Boolean isDecided(){
+        return  isDecided;
+    }
+    public Boolean isDecided(Boolean set){
         return  isDecided;
     }
 

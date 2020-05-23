@@ -17,7 +17,6 @@ import com.example.chatapp.R;
 import com.example.chatapp.activities.ViewQuestionActivity;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
-import com.example.chatapp.source.userlibrary.Purpose;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -91,7 +90,7 @@ public class TrackedActivity extends AppCompatActivity {
 
                 text = (TextView) v.findViewById(R.id.forum_question);
                 owner = (TextView) v.findViewById(R.id.textViewOwnerID);
-                imageView = (ImageView) v.findViewById(R.id.imageViewGotAnswer);
+                imageView = (ImageView) v.findViewById(R.id.imageViewIsTracked);
                 forum = (RelativeLayout) v.findViewById(R.id.dsForum);
                 if(model.getClass() == String.class) {
                     FirebaseDatabase.getInstance().getReference()

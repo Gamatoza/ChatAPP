@@ -32,6 +32,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -47,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
     String profileImgURL;
 
     FirebaseAuth mAuth;
-
+    FirebaseUser user;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -59,6 +60,9 @@ public class ProfileActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         textView = (TextView)findViewById(R.id.textViewVerified);
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -150,12 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = mAuth.getCurrentUser();
 
-        //theoretically
-        //он просто не получает значение что бы его обновить
-        //в плане - profileImgURL = null
-        //но в гайде это работает, я тупо хрен знает
         if(user != null && profileImgURL != null){
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                     .setDisplayName(displayName)
@@ -177,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage() {
         //upload the image to Storage in firebox in profilepics/[samename].jgp
         final StorageReference profileImageReference =
-                FirebaseStorage.getInstance().getReference("profilepics/"+System.currentTimeMillis()+".jpg");
+                FirebaseStorage.getInstance().getReference("profilepics/"+user.getUid()+".png");
         if(uriProfileImage != null) {
             progressBar.setVisibility(View.VISIBLE);
             profileImageReference.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -209,14 +208,29 @@ public class ProfileActivity extends AppCompatActivity {
 
         final FirebaseUser user = mAuth.getCurrentUser();
 
-        //uses Glide addons to convert url into bitmap???
-        //straight into imageView
-        //!!!!!!! а может проблема в том что он неправильно получает, я хз
         if(user != null) {
             if (user.getPhotoUrl() != null) {
+                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
+                ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        Picasso.get().load(uri)
+                                .into(imageView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                exception.getMessage(), Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+                Picasso.get().load(user.getPhotoUrl()).into(imageView);
+/*
                 Glide.with(ProfileActivity.this)
                         .load(user.getPhotoUrl().toString())
-                        .into(imageView);
+                        .into(imageView);*/
             }
             if (user.getDisplayName() != null) {
                 editText.setText(user.getDisplayName());

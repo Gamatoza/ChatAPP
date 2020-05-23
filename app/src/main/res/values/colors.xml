@@ -11,4 +11,9 @@
     <!--Message activity colors-->
     <color name="whiteBackground">#FFF</color>
     <color name="answerBackground">#f7d90f</color>
+
+    <!--Answer colors-->
+    <color name="colorHaveAnswer">#197823</color>
+    <color name="colorNoAnswer">#832424</color>
+
 </resources>

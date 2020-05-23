@@ -2,6 +2,7 @@ package com.example.chatapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class ForumActivity extends AppCompatActivity {
                 TextView text,owner;
                 text  = (TextView)v.findViewById(R.id.forum_question);
                 owner = (TextView)v.findViewById(R.id.textViewOwnerID);
-                ImageView imageView = (ImageView)v.findViewById(R.id.imageViewGotAnswer);
+                ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
                 text.setText(model.getTitle());
                 String Author = "Author: ";
                 if(mAuth.getUid().equals(model.getUserID())) Author += "You";
@@ -64,8 +65,12 @@ public class ForumActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+                /*
                 if(model.isDecided()) imageView.setImageResource(R.drawable.star_on);
                 else imageView.setImageResource(R.drawable.star_off);
+                */
+                if(model.isDecided()) forum.setBackgroundResource(R.color.colorHaveAnswer);
+                else forum.setBackgroundResource(R.color.whiteBackground);
             }
         };
         listOfMessages.setAdapter(adapter);
