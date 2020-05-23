@@ -57,11 +57,12 @@ public class ViewQuestionActivity extends AppCompatActivity{
     private Question currentQuestion;                   //Сам вопрос
     private Boolean isAuthor = false;                   //Проверка на авторство
 
-
     private FirebaseUser user;                          //Текущий пользователь
     private FirebaseDatabase database;                  //БД
     private DatabaseReference mainRef;                  //Ссылка на главный рут
 
+    private Boolean isTracked = false;
+    private String trackedInLibraryID = "";
     //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
     private static String LOG_TAG;
@@ -87,7 +88,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question);
+        setContentView(R.layout.activity_question_new);
 
         Intent intent = getIntent();
         FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
@@ -106,7 +107,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
         //region Получение текущего вопроса и назначение заголовка с вопросом
         //Достаем текущий форум и сразу назначаем вопрос
         //Таким образом он будет обновлятся, если вдруг автор решит изменить вопрос
-        final TextView textViewTitle,textViewDescription;
+        final TextView textViewTitle, textViewDescription;
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewDescription = findViewById(R.id.textViewDescription);
         mainRef.child("Forums").child(FORUM_ID).addValueEventListener(new ValueEventListener() {
@@ -128,7 +129,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
                 textViewDescription.setText(currentQuestion.getMainMessage().getText());
 
                 //Проверяет является ли автором зашедший пользователь
-                if(currentQuestion.getUserID().equals(user.getUid()))
+                if (currentQuestion.getUserID().equals(user.getUid()))
                     isAuthor = true;
                 displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
 
@@ -143,10 +144,10 @@ public class ViewQuestionActivity extends AppCompatActivity{
 
         //region Добавление обработчика на посыл сообщения
 
-        submitButton= findViewById(R.id.submit_button);
-        emojiButton= findViewById(R.id.emoji_button);
+        submitButton = findViewById(R.id.submit_button);
+        emojiButton = findViewById(R.id.emoji_button);
         emojiconEditText = findViewById(R.id.text_layout);
-        emojIconActions = new EmojIconActions(getApplicationContext(),activity_question,emojiconEditText,emojiButton);
+        emojIconActions = new EmojIconActions(getApplicationContext(), activity_question, emojiconEditText, emojiButton);
         emojIconActions.ShowEmojIcon();
 
         //посылает данные на сервер
@@ -163,6 +164,53 @@ public class ViewQuestionActivity extends AppCompatActivity{
             }
         });
 
+        //endregion
+
+        //region Добавление обработчика на добавления вопроса в отслеживаемые
+
+        final DatabaseReference trackRef = FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid())
+                .child("Tracked");
+        trackRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                    if (datas.getValue(String.class).equals(currentQuestion.getId())) {
+                        isTracked = true;
+                        trackedInLibraryID = datas.getKey();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final ImageView imageViewTracked = findViewById(R.id.imageViewTracked);
+
+        if (isTracked) {
+            imageViewTracked.setImageResource(R.drawable.star_on);
+        }
+
+        findViewById(R.id.imageViewTracked).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isTracked) {
+                    isTracked = false;
+                    imageViewTracked.setImageResource(R.drawable.star_off);
+                    trackRef.child(trackedInLibraryID).getRef().removeValue();
+                } else {
+                    isTracked = true;
+                    imageViewTracked.setImageResource(R.drawable.star_on);
+                    trackedInLibraryID = trackRef.push().getKey();
+                    trackRef.child(trackedInLibraryID).setValue(currentQuestion.getId());
+                }
+            }
+        });
         //endregion
 
 
