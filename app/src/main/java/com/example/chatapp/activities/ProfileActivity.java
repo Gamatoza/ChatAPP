@@ -226,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
-                Picasso.get().load(user.getPhotoUrl()).into(imageView);
+                //Picasso.get().load(user.getPhotoUrl()).into(imageView);
 /*
                 Glide.with(ProfileActivity.this)
                         .load(user.getPhotoUrl().toString())

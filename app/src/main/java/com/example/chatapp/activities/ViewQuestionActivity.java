@@ -4,11 +4,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,7 +20,8 @@ import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.github.library.bubbleview.BubbleTextView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,8 +30,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import android.text.format.DateFormat;
+import android.widget.Toast;
 
 import java.util.Map;
 
@@ -61,8 +65,10 @@ public class ViewQuestionActivity extends AppCompatActivity{
     private FirebaseDatabase database;                  //БД
     private DatabaseReference mainRef;                  //Ссылка на главный рут
 
-    private Boolean isTracked = false;
+    private Boolean  isTracked = false;
     private String trackedInLibraryID = "";
+
+
     //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
     private static String LOG_TAG;
@@ -88,7 +94,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question_new);
+        setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
         FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
@@ -172,13 +178,18 @@ public class ViewQuestionActivity extends AppCompatActivity{
                 .child("UsersLibrary")
                 .child(user.getUid())
                 .child("Tracked");
+
+        final ImageView imageViewTracked = findViewById(R.id.imageViewTracked);
+
         trackRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot datas : dataSnapshot.getChildren()) {
                     if (datas.getValue(String.class).equals(currentQuestion.getId())) {
+
                         isTracked = true;
                         trackedInLibraryID = datas.getKey();
+                        imageViewTracked.setImageResource(R.drawable.star_on);
                         return;
                     }
                 }
@@ -190,11 +201,6 @@ public class ViewQuestionActivity extends AppCompatActivity{
             }
         });
 
-        final ImageView imageViewTracked = findViewById(R.id.imageViewTracked);
-
-        if (isTracked) {
-            imageViewTracked.setImageResource(R.drawable.star_on);
-        }
 
         findViewById(R.id.imageViewTracked).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +217,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
                 }
             }
         });
+
         //endregion
 
 
@@ -222,7 +229,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes, ref) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes_new, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
@@ -236,10 +243,27 @@ public class ViewQuestionActivity extends AppCompatActivity{
                   //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
 
                 }else {
-                    v.setBackgroundResource(R.color.colorNoAnswer);
+                    v.setBackgroundResource(android.R.color.background_light);
                    // v = inflater.inflate(R.layout.left_mes,relativeLayout);
 
                 }
+
+                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
+                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
+                ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri)
+                                .into(avatar);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                exception.getMessage(), Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
 
                 //Назначение информации в облачке
                 TextView mess_user,mess_time;

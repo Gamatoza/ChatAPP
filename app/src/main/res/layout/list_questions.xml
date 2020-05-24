@@ -44,6 +44,7 @@
         android:maxWidth="5dp"
         android:maxHeight="5dp"
         android:src="@drawable/star_off"
+        android:visibility="gone"
         />
 
 </RelativeLayout>

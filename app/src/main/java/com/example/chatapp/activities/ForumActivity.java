@@ -17,8 +17,11 @@ import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ForumActivity extends AppCompatActivity {
 
@@ -42,14 +45,15 @@ public class ForumActivity extends AppCompatActivity {
         ListView listOfMessages = (ListView)findViewById(R.id.list_of_questions);
 
 
-        adapter = new FirebaseListAdapter<Question>
-                (this,Question.class,R.layout.list_questions,myRef.child("Forums")) {
+        adapter = new FirebaseListAdapter<Question>                                      //последние 5
+                (this,Question.class,R.layout.list_questions,myRef.child("Forums").limitToLast(5)) {
             @Override
             protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
                 TextView text,owner;
                 text  = (TextView)v.findViewById(R.id.forum_question);
                 owner = (TextView)v.findViewById(R.id.textViewOwnerID);
-                ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
+                final ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
+                imageView.setVisibility(View.VISIBLE);
                 text.setText(model.getTitle());
                 String Author = "Author: ";
                 if(mAuth.getUid().equals(model.getUserID())) Author += "You";
@@ -65,12 +69,34 @@ public class ForumActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                /*
+
+                FirebaseDatabase.getInstance().getReference()
+                        .child("UsersLibrary")
+                        .child(user.getUid())
+                        .child("Tracked")
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                                    if (datas.getValue(String.class).equals(model.getId())) {
+                                        imageView.setImageResource(R.drawable.star_on);
+                                        return;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                 if(model.isDecided()) imageView.setImageResource(R.drawable.star_on);
                 else imageView.setImageResource(R.drawable.star_off);
-                */
+
                 if(model.isDecided()) forum.setBackgroundResource(R.color.colorHaveAnswer);
-                else forum.setBackgroundResource(R.color.whiteBackground);
+                else forum.setBackgroundResource(android.R.color.background_light);
             }
         };
         listOfMessages.setAdapter(adapter);
