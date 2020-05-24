@@ -3,11 +3,16 @@ package com.example.chatapp.activities.userlibrary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -28,11 +33,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class CreatedActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private FirebaseUser user;
+
+    private ArrayList<Question> searchList;
+    private EditText searchText;
 
     String LOG_TAG = "Логи";
 
@@ -72,7 +82,159 @@ public class CreatedActivity extends AppCompatActivity {
             }
         });
 
+
+        searchText = findViewById(R.id.editTextSearch);
+
+        findViewById(R.id.btnSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (searchText.getText().toString().isEmpty()) {
+                    updateUI();
+                } else {
+                    searchUI();
+                }
+            }
+        });
+
+
         updateUI();
+    }
+
+    private class SearchAdapter extends BaseAdapter {
+
+        private ArrayList<Question> searchList;
+        private Context context;
+        public SearchAdapter(Context context,ArrayList<Question> searchList){
+            this.context = context;
+            notifyDataSetChanged();
+            this.searchList = searchList;
+            notifyDataSetChanged();
+        }
+
+
+        private Context getContext() {
+            return context;
+        }
+
+        @Override
+        public int getCount() {
+            return searchList.size();
+        }
+
+        @Override
+        public Question getItem(int position) {
+            return searchList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return searchList.indexOf(position);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Question qo = getItem(position);
+            notifyDataSetChanged();
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext())
+                        .inflate(R.layout.list_questions, null);
+                notifyDataSetChanged();
+            }
+            final TextView text, owner;
+            final ImageView imageView;
+            final RelativeLayout forum;
+
+            text = (TextView) convertView.findViewById(R.id.forum_question);
+            notifyDataSetChanged();
+            owner = (TextView) convertView.findViewById(R.id.textViewOwnerID);
+            notifyDataSetChanged();
+            imageView = (ImageView) convertView.findViewById(R.id.imageViewIsTracked);
+            notifyDataSetChanged();
+            forum = (RelativeLayout) convertView.findViewById(R.id.dsForum);
+            notifyDataSetChanged();
+
+            final QuestionInfo qi = qo.generateInfo();
+            text.setText(qi.getTitle());
+            notifyDataSetChanged();
+            String Author = "Author: ";
+            if (mAuth.getUid().equals(qi.getUserID())) Author += "You";
+            else Author += qi.getUserName();
+            owner.setText(Author);
+            notifyDataSetChanged();
+
+            forum.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(CreatedActivity.this, ViewQuestionActivity.class);
+                    intent.putExtra("forumRef", qi.getQuestionID());
+                    startActivity(intent);
+                }
+            });
+            notifyDataSetChanged();
+            if (qi.isDecided()) imageView.setImageResource(R.drawable.star_on);
+            else imageView.setImageResource(R.drawable.star_off);
+            notifyDataSetChanged();
+
+            return convertView;
+        }
+
+    }
+
+    private void searchUI() {
+        final ListView list = findViewById(R.id.listViewContent);
+
+        user = mAuth.getCurrentUser();
+
+        myRef = FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid());
+
+        FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid())
+                .child("Created").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                searchList = new ArrayList<>();
+                for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("Forums")
+                            .child(datas.getValue(String.class))
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    if (dataSnapshot.exists()) {
+                                        Question qo = dataSnapshot.getValue(Question.class);
+
+                                        if (qo.getTitle().toLowerCase().trim()
+                                                .contains(searchText.getText()
+                                                        .toString().toLowerCase().trim())) {
+                                            searchList.add(qo);
+                                        }
+                                    }
+                                    SearchAdapter adapter = new SearchAdapter(getApplicationContext(), searchList);
+
+                                    list.setAdapter(adapter);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.w("TAG", "Failed to read value.");
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     private void updateUI() {

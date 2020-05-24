@@ -15,18 +15,36 @@
         app:itemIconTint="@drawable/selector"
         app:menu="@menu/menu_navigation"/>
 
-
     <LinearLayout
         android:id="@+id/layoutContent"
         android:layout_below="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
+        android:orientation="vertical"
+        >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="60dp"
+                android:hint="search"/>
+            <Button
+                android:id="@+id/btnSearch"
+                android:layout_marginTop="6dp"
+                android:layout_width="60dp"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/editTextSearch"
+                android:text="S"/>
+        </RelativeLayout>
         <ListView
             android:id="@+id/listViewContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
-    
+
 </RelativeLayout>
