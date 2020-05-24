@@ -3,33 +3,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camara"
+            android:id="@+id/nav_topQuestions"
+            android:icon="@drawable/ic_top_black"
+            android:title="TOP Questions" />
+        <item
+            android:id="@+id/nav_Forum"
             android:icon="@drawable/ic_menu_black"
-            android:title="@string/import_item" />
+            android:title="Forum" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="@string/gallery_item" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="@string/slideshow_item" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="@string/tools_item" />
+            android:id="@+id/nav_library"
+            android:icon="@drawable/ic_library_black"
+            android:title="Library" />
     </group>
 
     <item android:title="@string/communicate_item">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="@string/share_item" />
+                android:id="@+id/nav_littleHelp"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Little helper" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@android:drawable/ic_menu_send"
-                android:title="@string/send_item" />
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black"
+                android:title="Settings" />
         </menu>
     </item>
 

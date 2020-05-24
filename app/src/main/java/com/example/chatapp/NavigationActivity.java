@@ -1,9 +1,9 @@
 package com.example.chatapp;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,20 +17,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.chatapp.activities.ProfileActivity;
-import com.example.chatapp.fragments.FragmentGallery;
-import com.example.chatapp.fragments.FragmentImport;
-import com.example.chatapp.fragments.FragmentSend;
-import com.example.chatapp.fragments.FragmentShare;
-import com.example.chatapp.fragments.FragmentSlideshow;
-import com.example.chatapp.fragments.FragmentTools;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.chatapp.activities.userlibrary.CreatedActivity;
+import com.example.chatapp.fragments.FragmentForums;
+import com.example.chatapp.fragments.FragmentLittleHelp;
+import com.example.chatapp.fragments.FragmentSettings;
+import com.example.chatapp.fragments.FragmentTopQuestions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,12 +34,12 @@ import com.squareup.picasso.Picasso;
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    FragmentImport fimport;
-    FragmentGallery fgallery;
-    FragmentSend fsend;
-    FragmentShare fshare;
-    FragmentSlideshow fshow;
-    FragmentTools ftools;
+    private static final int CHOOSE_IMAGE = 101;
+    FragmentTopQuestions topQuestions;
+    FragmentLittleHelp littleHelp;
+    FragmentForums forms;
+    FragmentSettings settings;
+    TextView textView;
 
     private FirebaseAuth mAuth;
     private View header;
@@ -56,14 +50,6 @@ public class NavigationActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,15 +62,29 @@ public class NavigationActivity extends AppCompatActivity
 
         header = navigationView.getHeaderView(0);
 
-        fgallery = new FragmentGallery();
-        fimport = new FragmentImport();
-        fsend = new FragmentSend();
-        fshare = new FragmentShare();
-        fshow = new FragmentSlideshow();
-        ftools = new FragmentTools();
+        topQuestions = new FragmentTopQuestions();
+        littleHelp = new FragmentLittleHelp();
+        settings = new FragmentSettings();
+
+        forms = new FragmentForums();
 
         mAuth = FirebaseAuth.getInstance();
         loadUserInformation();
+
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        /*textView = findViewById(R.id.textViewMainMessage);
+        textView.setMovementMethod(new ScrollingMovementMethod());*/
+
+        FragmentTransaction ftrans = getFragmentManager().beginTransaction();
+        ftrans.replace(R.id.container, forms);
     }
 
     @Override
@@ -98,53 +98,30 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        //textView.setVisibility(View.GONE);
         FragmentTransaction ftrans = getFragmentManager().beginTransaction();
 
-        if (id == R.id.nav_camara) {
-            ftrans.replace(R.id.container, fimport);
-        } else if (id == R.id.nav_gallery) {
-            ftrans.replace(R.id.container, fgallery);
-
-        } else if (id == R.id.nav_slideshow) {
-            ftrans.replace(R.id.container, fshow);
-
-        } else if (id == R.id.nav_manage) {
-            ftrans.replace(R.id.container, ftools);
-
-        } else if (id == R.id.nav_share) {
-            ftrans.replace(R.id.container, fshare);
-
-        } else if (id == R.id.nav_send) {
-            ftrans.replace(R.id.container, fsend);
-
-        } ftrans.commit();
+        switch (id) {
+            case R.id.nav_Forum:
+                ftrans.replace(R.id.container, forms);
+                break;
+            case R.id.nav_topQuestions:
+                ftrans.replace(R.id.container, topQuestions);
+                break;
+            case R.id.nav_littleHelp:
+                ftrans.replace(R.id.container, littleHelp);
+                break;
+            case R.id.nav_library:
+                startActivity(new Intent(this, CreatedActivity.class));
+                break;
+            case R.id.nav_settings:
+                ftrans.replace(R.id.container, settings);
+                break;
+        }
+         ftrans.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

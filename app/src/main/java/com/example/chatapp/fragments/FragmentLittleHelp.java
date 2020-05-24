@@ -3,21 +3,26 @@ package com.example.chatapp.fragments;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.chatapp.R;
+
+import me.grantland.widget.AutofitHelper;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FragmentTools#newInstance} factory method to
+ * Use the {@link FragmentLittleHelp#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentTools extends Fragment {
+public class FragmentLittleHelp extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,11 +40,11 @@ public class FragmentTools extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentTools.
+     * @return A new instance of fragment FragmentPattern.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentTools newInstance(String param1, String param2) {
-        FragmentTools fragment = new FragmentTools();
+    public static FragmentLittleHelp newInstance(String param1, String param2) {
+        FragmentLittleHelp fragment = new FragmentLittleHelp();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -47,7 +52,7 @@ public class FragmentTools extends Fragment {
         return fragment;
     }
 
-    public FragmentTools() {
+    public FragmentLittleHelp() {
         // Required empty public constructor
     }
 
@@ -58,13 +63,18 @@ public class FragmentTools extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_little_help, container, false);
+        TextView text = root.findViewById(R.id.textViewMainMessage);
+        AutofitHelper.create(text);
+        text.setMovementMethod(new ScrollingMovementMethod());
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tools, container, false);
+        return root;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

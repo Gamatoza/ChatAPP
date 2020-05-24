@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".fragments.FragmentLittleHelp"
+    tools:showIn="@layout/app_bar_main"
+    android:id="@+id/container"
+    >
+
+    <TextView
+        android:id="@+id/textViewMainMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/TextPreview"
+        android:textSize="20dp"
+        android:textAlignment="textStart"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@android:color/tertiary_text_light"
+        android:scrollbars="vertical"
+        />
+</FrameLayout>

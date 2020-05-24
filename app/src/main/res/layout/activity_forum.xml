@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ForumActivity">
-<ListView
-    android:id="@+id/list_of_questions"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="60dp"
+                android:hint="search"/>
+            <Button
+                android:id="@+id/btnSearch"
+                android:layout_marginTop="6dp"
+                android:layout_width="60dp"
+                android:layout_height="45dp"
+                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/editTextSearch"
+                android:text="S"/>
+        </RelativeLayout>
+        <ListView
+            android:id="@+id/listViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:rippleColor="@color/colorPrimary"
+        android:src="@drawable/ic_add_circle_black" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

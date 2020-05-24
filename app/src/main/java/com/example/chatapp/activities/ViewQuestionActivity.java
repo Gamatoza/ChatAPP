@@ -68,6 +68,8 @@ public class ViewQuestionActivity extends AppCompatActivity{
     private Boolean  isTracked = false;
     private String trackedInLibraryID = "";
 
+    private ValueEventListener mainListener;
+
 
     //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
@@ -94,7 +96,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question_new);
+        setContentView(R.layout.activity_question);
 
         Intent intent = getIntent();
         FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
@@ -116,37 +118,43 @@ public class ViewQuestionActivity extends AppCompatActivity{
         final TextView textViewTitle, textViewDescription;
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewDescription = findViewById(R.id.textViewDescription);
-        mainRef.child("Forums").child(FORUM_ID).addValueEventListener(new ValueEventListener() {
+        //endregion
+
+        mainListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    currentQuestion = dataSnapshot.getValue(Question.class);
 
-                currentQuestion = dataSnapshot.getValue(Question.class);
-
-                //currentQuestion.getId() если нужно что бы оно не добовляло нового
+                    //currentQuestion.getId() если нужно что бы оно не добовляло нового
                 /*
                 Date now = new Date();
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
                 //.child(f.format(now)) если нужно подстраивать под время
                 */
-                HistoryRef.push().setValue(currentQuestion.getId());
-                //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
-                textViewTitle.setText(currentQuestion.getTitle());
-                textViewDescription.setText(currentQuestion.getMainMessage().getText());
+                    HistoryRef.push().setValue(currentQuestion.getId());
+                    //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
+                    textViewTitle.setText(currentQuestion.getTitle());
+                    textViewDescription.setText(currentQuestion.getMainMessage().getText());
 
-                //Проверяет является ли автором зашедший пользователь
-                if (currentQuestion.getUserID().equals(user.getUid()))
-                    isAuthor = true;
-                displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
+                    //Проверяет является ли автором зашедший пользователь
+                    if (currentQuestion.getUserID().equals(user.getUid()))
+                        isAuthor = true;
+                    displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
+                }else{
+                    finish();
+                    Toast.makeText(getApplicationContext(),"It looks like the question was just deleted",Toast.LENGTH_SHORT).show();
 
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.w(LOG_TAG, "Failed to read value.");
             }
-        });
-        //endregion
+        };
+        mainRef.child("Forums").child(FORUM_ID).addValueEventListener(mainListener);
 
         //region Добавление обработчика на посыл сообщения
 
@@ -161,12 +169,14 @@ public class ViewQuestionActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 String pushID = mainRef.child("Messages").child(FORUM_ID).push().getKey();
-                mainRef.child("Messages").child(FORUM_ID).child(pushID).setValue(new Message(
-                        pushID,                                         //передаем
-                        emojiconEditText.getText().toString().trim(),
-                        user
-                ));
-                emojiconEditText.setText("");
+                if(!emojiconEditText.getText().toString().isEmpty()) {
+                    mainRef.child("Messages").child(FORUM_ID).child(pushID).setValue(new Message(
+                            pushID,                                         //передаем
+                            emojiconEditText.getText().toString().trim(),
+                            user
+                    ));
+                    emojiconEditText.setText("");
+                }
             }
         });
 
@@ -186,7 +196,6 @@ public class ViewQuestionActivity extends AppCompatActivity{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot datas : dataSnapshot.getChildren()) {
                     if (datas.getValue(String.class).equals(currentQuestion.getId())) {
-
                         isTracked = true;
                         trackedInLibraryID = datas.getKey();
                         imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
@@ -229,7 +238,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes_new, ref) {
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
@@ -248,23 +257,6 @@ public class ViewQuestionActivity extends AppCompatActivity{
 
                 }
 
-                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
-                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
-                ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.get().load(uri)
-                                .into(avatar);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                exception.getMessage(), Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                });
-
                 //Назначение информации в облачке
                 TextView mess_user,mess_time;
                 final BubbleTextView mess_text;
@@ -281,21 +273,24 @@ public class ViewQuestionActivity extends AppCompatActivity{
                 mess_text.setText(model.getText());
                 mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
 
-
-
-                //Если текущий пользователь является автором вопроса
-                if(isAuthor){
-                    //Проверка
-                    relativeLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Snackbar.make(activity_question, "Это сообщение имеет id = " + model.getId(), Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
+                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
 
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if(model.getUserID().equals(user.getUid())){
+                    ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get().load(uri)
+                                    .into(avatar);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            avatar.setImageResource(R.drawable.no_image);
+                        }
+                    });
+
                     //придумать как закинуть облачко на правую сторону
 
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -328,11 +323,30 @@ public class ViewQuestionActivity extends AppCompatActivity{
 
                 }else {
                     relativeLayout.setOnClickListener(null);
+                    ref.child(model.getUserID()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get().load(uri)
+                                    .into(avatar);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            avatar.setImageResource(R.drawable.no_image);
+                        }
+                    });
                 }
                 //else deleteImageView.setVisibility(View.GONE);
             }
         };
 
         listOfMessages.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
+
     }
 }

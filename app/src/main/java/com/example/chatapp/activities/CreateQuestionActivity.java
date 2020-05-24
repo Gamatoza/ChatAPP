@@ -2,12 +2,15 @@ package com.example.chatapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.chatapp.NavigationActivity;
 import com.example.chatapp.R;
+import com.example.chatapp.fragments.FragmentTopQuestions;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
@@ -66,8 +69,13 @@ public class CreateQuestionActivity extends AppCompatActivity {
                 ChangeRef.push().setValue(question.getId());
 
                 //после создания переходит обратно в мейн
-                Intent intent = new Intent(CreateQuestionActivity.this,MainActivity.class);
+                Intent intent = new Intent(CreateQuestionActivity.this, ViewQuestionActivity.class);
+
+                FragmentTransaction ftrans = getFragmentManager().beginTransaction();
+                ftrans.replace(R.id.container, new FragmentTopQuestions());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("forumRef",pushKey);
+                finish();
                 startActivity(intent);
 
             }

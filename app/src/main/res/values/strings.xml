@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Forum chat</string>
+    <string name="app_name">Forum Chat</string>
     <string name="title_activity_sign_up">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -46,4 +46,14 @@
     <string name="communicate_item">Communicate</string>
     <string name="share_item">Share</string>
     <string name="send_item">Send</string>
+    <string name="TextPreview">
+        <b>Welcome to Forum Chat!</b>\n
+        Here you can quickly get an answer to any of your questions, if, of course, there is an answer to it, and our users know it.\n
+        First, I recommend that you put your own avatar and assign a nickname at <b>Settings</b>, so that people know who is responsible, and what would be beautiful.\n
+        To ask a question, go to the <b>Forums</b> tab and click <b>Add</b> question.\n
+        If you want to view the questions and find the ones that have already been answered, or answer the question yourself, you can still use the <b>Search</b> in the same tab.\n
+        If you want to add a question to the tracked ones, you just need to click on the <b>Star</b> directly in the question itself to know when it will be answered.\n
+        In order to view the questions that you <b>Created</b> or those that you marked as <b>Tracked</b>, go to the Library tab. there are not only the above criteria, but also the <b>History</b> of viewed questions, in case you forgot where you viewed them.\n
+        <b>Enjoy your use!</b>
+    </string>
 </resources>

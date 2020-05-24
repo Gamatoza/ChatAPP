@@ -6,21 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.LoginActivity"
-    android:background="@color/colorMainSU"
+    android:background="@drawable/side_nav_bar"
+    android:screenOrientation="landscape"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="30dp"
-        android:background="@color/colorSecondSU"
-        >
-
+        android:padding="30dp">
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/googleg_standard_color_18" />
+            app:srcCompat="@drawable/ic_spa_purple_24dp"
+            tools:ignore="VectorDrawableCompat" />
     </RelativeLayout>
 
     <RelativeLayout

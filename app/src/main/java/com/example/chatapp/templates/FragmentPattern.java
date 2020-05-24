@@ -1,4 +1,4 @@
-package com.example.chatapp.fragments;
+package com.example.chatapp.templates;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -14,10 +14,10 @@ import com.example.chatapp.R;
  * Activities that contain this fragment must implement the
  * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FragmentShare#newInstance} factory method to
+ * Use the {@link FragmentPattern#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentShare extends Fragment {
+public class FragmentPattern extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,11 +35,11 @@ public class FragmentShare extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentShare.
+     * @return A new instance of fragment FragmentPattern.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentShare newInstance(String param1, String param2) {
-        FragmentShare fragment = new FragmentShare();
+    public static FragmentPattern newInstance(String param1, String param2) {
+        FragmentPattern fragment = new FragmentPattern();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -47,7 +47,7 @@ public class FragmentShare extends Fragment {
         return fragment;
     }
 
-    public FragmentShare() {
+    public FragmentPattern() {
         // Required empty public constructor
     }
 
@@ -64,7 +64,7 @@ public class FragmentShare extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_share, container, false);
+        return inflater.inflate(R.layout.fragment_little_help, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

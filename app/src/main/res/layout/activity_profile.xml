@@ -6,14 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.ProfileActivity"
+    android:screenOrientation="landscape"
     >
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        ></androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:layout_width="match_parent"
@@ -66,6 +60,16 @@
         android:paddingLeft="55dp"
         android:paddingRight="55dp"
         android:text="Save"
+        android:textAllCaps="false"/>
+    <Button
+        android:id="@+id/buttonExit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:paddingLeft="55dp"
+        android:paddingRight="55dp"
+        android:text="Log out"
         android:textAllCaps="false"/>
 
 

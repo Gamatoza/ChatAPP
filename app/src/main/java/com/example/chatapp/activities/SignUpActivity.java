@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.chatapp.NavigationActivity;
 import com.example.chatapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,9 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             ref.child("Tracked").setValue("");
                             ref.child("History").setValue("");
                             finish();
-                            Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+                            Intent intent = new Intent(SignUpActivity.this, NavigationActivity.class);
                         }
                         else {
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){
