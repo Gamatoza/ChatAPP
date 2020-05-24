@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.buttonQuit).setOnClickListener(this);
         findViewById(R.id.buttonShowProfile).setOnClickListener(this);
 
-
     }
 
 
