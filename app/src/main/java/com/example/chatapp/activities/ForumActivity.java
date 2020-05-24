@@ -79,9 +79,9 @@ public class ForumActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot datas : dataSnapshot.getChildren()) {
                                     if (datas.getValue(String.class).equals(model.getId())) {
-                                        imageView.setImageResource(R.drawable.star_on);
+                                        imageView.setImageResource(R.drawable.ic_star_on_black);
                                         return;
-                                    }
+                                    }else imageView.setImageResource(R.drawable.ic_star_off_black);
                                 }
                             }
 
@@ -90,10 +90,6 @@ public class ForumActivity extends AppCompatActivity {
 
                             }
                         });
-
-
-                if(model.isDecided()) imageView.setImageResource(R.drawable.star_on);
-                else imageView.setImageResource(R.drawable.star_off);
 
                 if(model.isDecided()) forum.setBackgroundResource(R.color.colorHaveAnswer);
                 else forum.setBackgroundResource(android.R.color.background_light);

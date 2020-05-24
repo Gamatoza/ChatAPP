@@ -35,7 +35,7 @@ tools:context=".activities.ViewQuestionActivity"
             android:layout_height="40dp"
             android:maxWidth="20dp"
             android:maxHeight="20dp"
-            android:background="@drawable/star_off"
+            android:background="@drawable/ic_star_off_black"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             />

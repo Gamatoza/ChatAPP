@@ -94,7 +94,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question);
+        setContentView(R.layout.activity_question_new);
 
         Intent intent = getIntent();
         FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
@@ -189,7 +189,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
 
                         isTracked = true;
                         trackedInLibraryID = datas.getKey();
-                        imageViewTracked.setImageResource(R.drawable.star_on);
+                        imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
                         return;
                     }
                 }
@@ -207,11 +207,11 @@ public class ViewQuestionActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if (isTracked) {
                     isTracked = false;
-                    imageViewTracked.setImageResource(R.drawable.star_off);
+                    imageViewTracked.setImageResource(R.drawable.ic_star_off_black);
                     trackRef.child(trackedInLibraryID).getRef().removeValue();
                 } else {
                     isTracked = true;
-                    imageViewTracked.setImageResource(R.drawable.star_on);
+                    imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
                     trackedInLibraryID = trackRef.push().getKey();
                     trackRef.child(trackedInLibraryID).setValue(currentQuestion.getId());
                 }

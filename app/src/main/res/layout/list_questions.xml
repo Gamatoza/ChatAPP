@@ -43,7 +43,7 @@
         android:layout_marginBottom="10dp"
         android:maxWidth="5dp"
         android:maxHeight="5dp"
-        android:src="@drawable/star_off"
+        android:src="@drawable/ic_star_off_black"
         android:visibility="gone"
         />
 

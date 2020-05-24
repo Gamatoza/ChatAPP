@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chatapp">
+    package="com.example.chatapp" >
 
     <application
         android:allowBackup="true"
@@ -8,20 +8,25 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activities.userlibrary.HistoryActivity"></activity>
-        <activity android:name=".activities.userlibrary.TrackedActivity" />
-        <activity android:name=".activities.userlibrary.CreatedActivity" />
-        <activity android:name=".activities.ChangeMessageActivity"
+        android:theme="@style/AppTheme" >
+        <activity android:name=".activities.userlibrary.HistoryActivity"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".activities.ChangeQuestionActivity"
+        <activity android:name=".activities.userlibrary.TrackedActivity"
             android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activities.userlibrary.CreatedActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activities.ChangeMessageActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.ChangeQuestionActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.ForumActivity" />
         <activity android:name=".activities.CreateQuestionActivity" />
         <activity android:name=".activities.ViewQuestionActivity" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.SignUpActivity" />
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name=".activities.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
