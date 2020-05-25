@@ -19,9 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.chatapp.R;
-import com.example.chatapp.activities.ForumActivity;
 import com.example.chatapp.activities.ViewQuestionActivity;
-import com.example.chatapp.activities.userlibrary.CreatedActivity;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;

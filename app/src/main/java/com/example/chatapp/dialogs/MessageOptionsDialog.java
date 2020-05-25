@@ -15,18 +15,13 @@ import androidx.annotation.NonNull;
 
 import com.example.chatapp.activities.ChangeMessageActivity;
 import com.example.chatapp.R;
-import com.example.chatapp.activities.ForumActivity;
-import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
 /*
 * AND HERE TOO
 */

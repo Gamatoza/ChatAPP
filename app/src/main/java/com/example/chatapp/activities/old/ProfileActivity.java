@@ -1,4 +1,4 @@
-package com.example.chatapp.activities;
+package com.example.chatapp.activities.old;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.chatapp.R;
+import com.example.chatapp.activities.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -115,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
         //if we don't have registered user, go back to login screen
         if(mAuth.getCurrentUser() == null){
             finish();
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
     }

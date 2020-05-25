@@ -16,11 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.LoginActivity;
-import com.example.chatapp.activities.ProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -232,6 +230,7 @@ public class FragmentSettings extends Fragment {
                 FirebaseStorage.getInstance().getReference("profilepics/"+user.getUid()+".png");
         if(uriProfileImage != null) {
             progressBar.setVisibility(View.VISIBLE);
+            profileImageReference.delete();
             profileImageReference.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

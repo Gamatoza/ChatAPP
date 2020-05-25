@@ -1,8 +1,7 @@
-package com.example.chatapp.activities;
+package com.example.chatapp.activities.old;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.chatapp.R;
+import com.example.chatapp.activities.ViewQuestionActivity;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,7 +66,7 @@ public class ForumActivity extends AppCompatActivity {
                 forum.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ForumActivity.this,ViewQuestionActivity.class);
+                        Intent intent = new Intent(ForumActivity.this, ViewQuestionActivity.class);
                         intent.putExtra("forumRef",model.getId());
                         startActivity(intent);
                     }
