@@ -2,13 +2,18 @@ package com.example.chatapp.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -29,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +43,7 @@ import com.squareup.picasso.Picasso;
 import android.text.format.DateFormat;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
@@ -48,7 +55,7 @@ STAY THE FUCK OUT OF HERE
 DON'T TOUCH IT
 HERE EVERYTHING IS KEPT ON THE WILL OF GOD
  */
-public class ViewQuestionActivity extends AppCompatActivity{
+public class ViewQuestionActivity extends AppCompatActivity {
 
     private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
     private RelativeLayout activity_question;           //Основной бэкграунд
@@ -65,7 +72,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
     private FirebaseDatabase database;                  //БД
     private DatabaseReference mainRef;                  //Ссылка на главный рут
 
-    private Boolean  isTracked = false;
+    private Boolean isTracked = false;
     private String trackedInLibraryID = "";
 
     private ValueEventListener mainListener;
@@ -78,19 +85,18 @@ public class ViewQuestionActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_CODE){
-            if(resultCode == RESULT_OK){
+        if (requestCode == SIGN_IN_CODE) {
+            if (resultCode == RESULT_OK) {
                 Snackbar.make(activity_question, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
                 displayAllMessages();
-            }
-            else {
+            } else {
                 Snackbar.make(activity_question, "Вы не авторизованы", Snackbar.LENGTH_LONG).show();
                 finish();
             }
         }
     }
 
-    Map<String,Question> History;
+    Map<String, Question> History;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -123,7 +129,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
         mainListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     currentQuestion = dataSnapshot.getValue(Question.class);
 
                     //currentQuestion.getId() если нужно что бы оно не добовляло нового
@@ -142,9 +148,9 @@ public class ViewQuestionActivity extends AppCompatActivity{
                     if (currentQuestion.getUserID().equals(user.getUid()))
                         isAuthor = true;
                     displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
-                }else{
+                } else {
                     finish();
-                    Toast.makeText(getApplicationContext(),"It looks like the question was just deleted",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "It looks like the question was just deleted", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -169,7 +175,7 @@ public class ViewQuestionActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 String pushID = mainRef.child("Messages").child(FORUM_ID).push().getKey();
-                if(!emojiconEditText.getText().toString().isEmpty()) {
+                if (!emojiconEditText.getText().toString().isEmpty()) {
                     mainRef.child("Messages").child(FORUM_ID).child(pushID).setValue(new Message(
                             pushID,                                         //передаем
                             emojiconEditText.getText().toString().trim(),
@@ -232,13 +238,15 @@ public class ViewQuestionActivity extends AppCompatActivity{
 
     }
 
+
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
         final ListView listOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this,Message.class,R.layout.left_mes, ref) {
+
+        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this, Message.class, R.layout.left_mes, ref) {
             @SuppressLint("ResourceAsColor")
             @Override
             protected void populateView(View v, final Message model, int position) {
@@ -246,53 +254,56 @@ public class ViewQuestionActivity extends AppCompatActivity{
                 final RelativeLayout relativeLayout;
                 relativeLayout = v.findViewById(R.id.dsMessage);
                 //inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                //Если это сообщение является ответом, оно помечается
-                if(model.getId().equals(currentQuestion.getAnswer())){
-                    v.setBackgroundResource(R.color.colorHaveAnswer);
-                  //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
 
-                }else {
+                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
+                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
+
+                ref.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get()
+                                .load(uri)
+                                .into(avatar);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        avatar.setImageResource(R.drawable.no_image);
+                    }
+                });
+
+                //Если это сообщение является ответом, оно помечается
+                if (model.getId().equals(currentQuestion.getAnswer())) {
+                    v.setBackgroundResource(R.color.colorHaveAnswer);
+                    //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
+
+                } else {
                     v.setBackgroundResource(android.R.color.background_light);
-                   // v = inflater.inflate(R.layout.left_mes,relativeLayout);
+                    // v = inflater.inflate(R.layout.left_mes,relativeLayout);
 
                 }
 
+
                 //Назначение информации в облачке
-                TextView mess_user,mess_time;
+                TextView mess_user, mess_time;
                 final BubbleTextView mess_text;
                 mess_user = v.findViewById(R.id.message_user);
                 mess_time = v.findViewById(R.id.message_time);
                 mess_text = v.findViewById(R.id.message_text);
 
 
-                if(model.getUserID().equals(user.getUid())) mess_user.setText("You");
-                else if(model.getUserDisplayName()!=null)
-                mess_user.setText(model.getUserDisplayName());
+                if (model.getUserID().equals(user.getUid())) mess_user.setText("You");
+                else if (model.getUserDisplayName() != null)
+                    mess_user.setText(model.getUserDisplayName());
                 else mess_user.setText(model.getUserEmail());
 
                 mess_text.setText(model.getText());
-                mess_time.setText(DateFormat.format("dd-mm-yyyy HH:mm:ss",model.getMessageTime()));
-
-                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
-                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss" );
+                mess_time.setText(format.format(model.getMessageTime()));
 
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
-                if(model.getUserID().equals(user.getUid())){
-                    ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Picasso.get()
-                                    .load(uri)
-                                    .error(R.drawable.no_image)
-                                    .into(avatar);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            avatar.setImageResource(R.drawable.no_image);
-                        }
-                    });
-
+                if (model.getUserID().equals(user.getUid())) {
                     //придумать как закинуть облачко на правую сторону
 
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -301,11 +312,11 @@ public class ViewQuestionActivity extends AppCompatActivity{
                             final MessageOptionsDialog dlg = new MessageOptionsDialog();
                             Bundle args = new Bundle();
                             args.putString("forum_key", FORUM_ID);
-                            args.putString("message_key",model.getId());
-                            args.putBoolean("is_author",isAuthor);
+                            args.putString("message_key", model.getId());
+                            args.putBoolean("is_author", isAuthor);
 
                             dlg.setArguments(args);
-                            dlg.show(getFragmentManager(),"dlg");
+                            dlg.show(getFragmentManager(), "dlg");
                         }
                     });
                     /*
@@ -323,28 +334,15 @@ public class ViewQuestionActivity extends AppCompatActivity{
                         }
                     });*/
 
-                }else {
+                } else {
                     relativeLayout.setOnClickListener(null);
-                    ref.child(model.getUserID()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Picasso.get()
-                                    .load(uri)
-                                    .error(R.drawable.no_image)
-                                    .into(avatar);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            avatar.setImageResource(R.drawable.no_image);
-                        }
-                    });
                 }
                 //else deleteImageView.setVisibility(View.GONE);
             }
         };
 
         listOfMessages.setAdapter(adapter);
+
     }
 
     @Override
@@ -353,4 +351,23 @@ public class ViewQuestionActivity extends AppCompatActivity{
         mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
 
     }
+
+    class MessageAdapter<T> extends FirebaseListAdapter<T> implements Adapter {
+
+        public MessageAdapter(Activity activity, Class modelClass, int modelLayout, Query ref) {
+            super(activity, modelClass, modelLayout, ref);
+        }
+
+        public MessageAdapter(Activity activity, Class modelClass, int modelLayout, DatabaseReference ref) {
+            super(activity, modelClass, modelLayout, ref);
+        }
+
+        @Override
+        protected void populateView(View v, T model, int position) {
+
+        }
+
+    }
+
+
 }

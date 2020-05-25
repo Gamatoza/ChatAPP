@@ -12,10 +12,10 @@ public class QuestionInfo {
     private String Title;           //Заголовок
     private Boolean IsDecided;      //Проверка ответа
     private String AnswerMessageID; //ID ответа
-    private long StateTime;         //Время создания вопроса
+    private Date StateTime;         //Время создания вопроса
 
 
-    public QuestionInfo(String userName, String userID, String questionID, String title, Boolean isDecided, String answerMessageID, long stateTime){
+    public QuestionInfo(String userName, String userID, String questionID, String title, Boolean isDecided, String answerMessageID, Date stateTime){
         UserName = userName;
         UserID = userID;
         QuestionID = questionID;
@@ -51,11 +51,11 @@ public class QuestionInfo {
         return AnswerMessageID;
     }
 
-    public long getStateTime() {
+    public Date getStateTime() {
         return StateTime;
     }
 
-    public void setCurrentTime() { StateTime = new Date().getTime(); }
+    public void setCurrentTime() { StateTime = new Date(); }
     //endregion
 
 }

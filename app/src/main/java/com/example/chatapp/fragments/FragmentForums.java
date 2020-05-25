@@ -19,7 +19,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.chatapp.R;
+import com.example.chatapp.activities.CreateQuestionActivity;
 import com.example.chatapp.activities.ViewQuestionActivity;
+import com.example.chatapp.activities.userlibrary.CreatedActivity;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -117,6 +119,13 @@ public class FragmentForums extends Fragment {
                 if (!searchText.getText().toString().isEmpty()) {
                     searchUI();
                 }
+            }
+        });
+
+        root.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CreateQuestionActivity.class));
             }
         });
         // Inflate the layout for this fragment

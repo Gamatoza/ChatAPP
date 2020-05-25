@@ -20,6 +20,7 @@
         android:padding="10dp"
         android:maxLength="30"
         />
+
     <TextView
         android:id="@+id/textViewOwnerID"
         android:layout_width="wrap_content"

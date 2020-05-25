@@ -8,7 +8,7 @@ public class Message implements UserInformation, Cloneable {
 
     private String id;              //идентификатор сообщения       g
     private String text;            //внутренний текст              gs
-    private long messageTime;       //время отправки сообщения      gs
+    private Date messageTime;       //время отправки сообщения      gs
 
     //region Колонка пользователя
     ///Важность параметры сверху вниз
@@ -20,7 +20,7 @@ public class Message implements UserInformation, Cloneable {
 
     {
         id = "0";
-        this.messageTime = new Date().getTime();
+        this.messageTime = new Date();
     }
 
     //region Constructors
@@ -92,11 +92,11 @@ public class Message implements UserInformation, Cloneable {
         this.text = text;
     }
 
-    public long getMessageTime() {
+    public Date getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
+    public void setMessageTime(Date messageTime) {
         this.messageTime = messageTime;
     }
 
@@ -151,7 +151,7 @@ public class Message implements UserInformation, Cloneable {
     //endregion
 
     public void setCurrentTime(){
-        this.messageTime = new Date().getTime();
+        this.messageTime = new Date();
     }
 
 }

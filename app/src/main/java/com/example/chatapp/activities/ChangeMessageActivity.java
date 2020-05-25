@@ -45,7 +45,7 @@ public class ChangeMessageActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentMessage = dataSnapshot.getValue(Message.class);
-                        currentMessage.setMessageTime(new Date().getTime());
+                        currentMessage.setMessageTime(new Date());
                         text.setText(currentMessage.getText());
                     }
 

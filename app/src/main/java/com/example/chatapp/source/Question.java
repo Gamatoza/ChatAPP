@@ -23,10 +23,10 @@ public class Question implements Cloneable {
     private String answerMessageID; //ID ответа                     gs
 
     private Message mainMessage;    //Вопрос                        gs
-    private long stateTime;         //Время создания вопроса        gs
+    private Date stateTime;         //Время создания вопроса        gs
 
     {
-        this.stateTime = new Date().getTime();
+        this.stateTime = new Date();
         isDecided = false;
     }
 
@@ -83,7 +83,7 @@ public class Question implements Cloneable {
         this.mainMessage = mainMessage;
     }
 
-    public long getStateTime() {
+    public Date getStateTime() {
         return stateTime;
     }
 

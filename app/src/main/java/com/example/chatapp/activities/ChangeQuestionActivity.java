@@ -51,7 +51,7 @@ public class ChangeQuestionActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentQuestion = dataSnapshot.getValue(Question.class);
                         currentQuestion.resetResponse();
-                        currentQuestion.getMainMessage().setMessageTime(new Date().getTime());
+                        currentQuestion.getMainMessage().setMessageTime(new Date());
                         title.setText(currentQuestion.getTitle());
                         message.setText(currentQuestion.getMainMessage().getText());
                     }
