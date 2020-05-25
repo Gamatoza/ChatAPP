@@ -258,7 +258,7 @@ public class TrackedActivity extends AppCompatActivity {
                 if(model.getClass() == String.class) {
                     FirebaseDatabase.getInstance().getReference()
                             .child("Forums")
-                            .child(model).addValueEventListener(new ValueEventListener() {
+                            .child(model).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {

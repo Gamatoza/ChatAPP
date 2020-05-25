@@ -271,7 +271,7 @@ public class HistoryActivity extends AppCompatActivity {
 
                     FirebaseDatabase.getInstance().getReference()
                             .child("Forums")
-                            .child(model).addValueEventListener(new ValueEventListener() {
+                            .child(model).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {

@@ -65,7 +65,7 @@ public class QuestionsOptionsDialog extends DialogFragment implements OnClickLis
                         .child("UsersLibrary")
                         .child(USER_KEY)
                         .child("Created")
-                        //.child(LIB_KEY)
+                        .child(LIB_KEY)
                         .getRef().removeValue();
                 FirebaseDatabase.getInstance().getReference()
                         .child("Forums")
