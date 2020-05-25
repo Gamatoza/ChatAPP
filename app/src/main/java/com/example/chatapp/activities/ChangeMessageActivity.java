@@ -41,7 +41,7 @@ public class ChangeMessageActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference()
                 .child("Messages")
                 .child(FORUM_KEY)
-                .child(MESSAGE_KEY).addValueEventListener(new ValueEventListener() {
+                .child(MESSAGE_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         currentMessage = dataSnapshot.getValue(Message.class);

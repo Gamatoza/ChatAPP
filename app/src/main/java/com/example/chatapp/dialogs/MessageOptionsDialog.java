@@ -57,24 +57,24 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
                     Qref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            current = (Question)dataSnapshot.getValue(Question.class);
+                            if(dataSnapshot.exists()) {
 
-                            /*if(current.isDecided()!= null)
-                            if(!current.isDecided() && current.getAnswer() == null) //если ответа нет
-                            {
+                                current = (Question) dataSnapshot.getValue(Question.class);
+                                /*
+                                if (current.isDecided() != null)
+                                    if (!current.isDecided() && current.getAnswer() == null) //если ответа нет
+                                    {
+                                        current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                                    } else if (current.isDecided() && current.getAnswer() != null) { //если ответ есть и id совпадают
+                                        current.isDecided(false);
+                                        current.setAnswer(null); //убирает
+                                    } else {
+                                        current.setAnswer(MESSAGE_KEY); //переназначает
+                                    }
+                                    */
                                 current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                                finalRef.setValue(current);
                             }
-                            else if (current.isDecided() && current.getAnswer() != null){ //если ответ есть и id совпадают
-                                current.isDecided(false);
-                                current.setAnswer(null); //убирает
-                            }
-                            else {
-                                current.setAnswer(MESSAGE_KEY); //переназначает
-                            }*/
-
-                            current.setAnswer(MESSAGE_KEY); //ставит вопрос
-                            finalRef.setValue(current);
-
                         }
 
                         @Override
@@ -124,6 +124,4 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
         super.onCancel(dialog);
         Log.d(LOG_TAG, "Dialog 1: onCancel");
     }
-
-
 }

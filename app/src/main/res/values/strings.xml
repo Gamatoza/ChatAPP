@@ -17,7 +17,7 @@
     <string name="dialog_1">Dialog 1</string>
     <string name="dialog_2">Dialog 2</string>
     <string name="delete_message_text">Вы действительно хотите удалить это сообщение?</string>
-    <string name="rate_message_text">Вы действительно хотите пометить это сообщение как ответ?</string>
+    <string name="rate_message_text">Do you really want to mark this message as a response?</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.chatapp.R;
 import com.example.chatapp.dialogs.MessageOptionsDialog;
+import com.example.chatapp.dialogs.RateDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -336,6 +337,19 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
                 } else {
                     relativeLayout.setOnClickListener(null);
+                    if(isAuthor){
+                        relativeLayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                RateDialog dlg = new RateDialog();
+                                Bundle args = new Bundle();
+                                args.putString("forum_key",FORUM_ID);
+                                args.putString("message_key",model.getId());
+                                dlg.setArguments(args);
+                                dlg.show(getFragmentManager(),"dlg");
+                            }
+                        });
+                    }
                 }
                 //else deleteImageView.setVisibility(View.GONE);
             }
