@@ -119,10 +119,10 @@ public class Question implements Cloneable {
 
     public QuestionInfo generateInfo() {
             String name;
-            if(mainMessage.getUserDisplayName() != null)
+            if(mainMessage.getUserDisplayName() != null && !mainMessage.getUserDisplayName().isEmpty())
                 name = mainMessage.getUserDisplayName();
             else
-                name = mainMessage.getUserEmail();
+                name = mainMessage.getUserEmail().split("@")[0];
             return new QuestionInfo(name,getUserID(),getId(),getTitle(),isDecided(),getAnswer(),getStateTime());
     }
 }

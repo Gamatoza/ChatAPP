@@ -211,7 +211,11 @@ public class FragmentForums extends Fragment {
             notifyDataSetChanged();
 
             final QuestionInfo qi = qo.generateInfo();
-            text.setText(qi.getTitle());
+            String title = "";
+            if(qi.getTitle().length() >= 16){
+                title = qi.getTitle().substring(0,15) + "...";
+            }else title = qi.getTitle();
+            text.setText(title);
             notifyDataSetChanged();
             String Author = "Author: ";
             if (mAuth.getUid().equals(qi.getUserID())) Author += "You";

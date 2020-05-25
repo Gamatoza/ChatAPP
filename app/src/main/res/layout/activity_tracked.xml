@@ -40,7 +40,7 @@
                 android:layout_height="45dp"
                 android:layout_alignParentRight="true"
                 android:layout_toLeftOf="@+id/editTextSearch"
-                android:text="S"/>
+                android:text="&#128269;"/>
         </RelativeLayout>
         <ListView
             android:id="@+id/listViewContent"

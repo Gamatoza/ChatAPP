@@ -86,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             ref.child("Tracked").setValue("");
                             ref.child("History").setValue("");
                             finish();
-                            Intent intent = new Intent(SignUpActivity.this, NavigationActivity.class);
+                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                         }
                         else {
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){

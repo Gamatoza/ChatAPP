@@ -54,7 +54,9 @@ public class ForumActivity extends AppCompatActivity {
                 owner = (TextView)v.findViewById(R.id.textViewOwnerID);
                 final ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
                 imageView.setVisibility(View.VISIBLE);
-                text.setText(model.getTitle());
+                if(model.getTitle().length() >= 19){
+                    text.setText(model.getTitle().substring(19) + "...");
+                }
                 String Author = "Author: ";
                 if(mAuth.getUid().equals(model.getUserID())) Author += "You";
                 else if(model.getMainMessage().getUserDisplayName()!=null) Author+=model.getMainMessage().getUserDisplayName();

@@ -209,10 +209,9 @@ public class FragmentSettings extends Fragment {
         }
 
 
-        if(user != null && profileImgURL != null){
+        if(user != null){
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                     .setDisplayName(displayName)
-                    .setPhotoUri(Uri.parse(profileImgURL))
                     .build();
 
             user.updateProfile(profile)
@@ -246,6 +245,7 @@ public class FragmentSettings extends Fragment {
                     Toast.makeText(getActivity(),e.getMessage(),Toast.LENGTH_SHORT).show();
                 }
             });
+
         }
     }
 
@@ -269,7 +269,9 @@ public class FragmentSettings extends Fragment {
                     @Override
                     public void onSuccess(Uri uri) {
 
-                        Picasso.get().load(uri)
+                        Picasso.get()
+                                .load(uri)
+                                .error(R.drawable.no_image)
                                 .into(imageView);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

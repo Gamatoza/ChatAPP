@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.chatapp.NavigationActivity;
 import com.example.chatapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.textViewSignUp).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.textViewResetPassword).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editTextEmail.getText().toString().isEmpty()) {
+                    editTextEmail.setError("Enter the email address to send the password reset message");
+                    editTextEmail.requestFocus();
+                    return;
+                }else {
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(editTextEmail.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(),"Reset message sended, check out your email",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
 
     }
 

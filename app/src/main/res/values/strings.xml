@@ -11,6 +11,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="LoginText">Don\'t have account? <u><b>Sign up</b></u></string>
     <string name="SignUpText">Already have account? <u><b>Login</b></u></string>
+    <string name="Forgot">Forgot the password? <u><b>Send reset email</b></u></string>
 
     <!--Dialog strings-->
     <string name="dialog_1">Dialog 1</string>

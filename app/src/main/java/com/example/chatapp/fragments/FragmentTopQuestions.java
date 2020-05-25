@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.CreateQuestionActivity;
@@ -27,6 +29,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,7 +110,7 @@ public class FragmentTopQuestions extends Fragment {
         ListView listOfMessages = (ListView)root.findViewById(R.id.list_of_questions);
 
 
-        adapter = new FirebaseListAdapter<Question>                                      //последние 5
+        adapter = new FirebaseListAdapter<Question>                                      //последние 20
                 (getActivity(),Question.class,R.layout.list_questions,myRef.child("Forums").limitToLast(20)) {
             @Override
             protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
@@ -114,11 +119,14 @@ public class FragmentTopQuestions extends Fragment {
                 owner = (TextView)v.findViewById(R.id.textViewOwnerID);
                 final ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
                 imageView.setVisibility(View.VISIBLE);
-                text.setText(model.getTitle());
+                String title="";
+                if(model.getTitle().length() >= 16){
+                    title = model.getTitle().substring(0,15) + "...";
+                }else title = model.getTitle();
+                text.setText(title);
                 String Author = "Author: ";
                 if(mAuth.getUid().equals(model.getUserID())) Author += "You";
-                else if(model.getMainMessage().getUserDisplayName()!=null) Author+=model.getMainMessage().getUserDisplayName();
-                else Author+=model.getMainMessage().getUserEmail();
+                else Author+=model.generateInfo().getUserName();
                 owner.setText(Author);
                 RelativeLayout forum = (RelativeLayout)v.findViewById(R.id.dsForum);
                 forum.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +163,15 @@ public class FragmentTopQuestions extends Fragment {
                 else forum.setBackgroundResource(android.R.color.background_light);
             }
         };
+
+        //TODO переделать ListViewer в RecyclerViewer
+        /*LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+
+        listView.setLayoutManager(mLayoutManager);*/
         listOfMessages.setAdapter(adapter);
-
-
+        listOfMessages.scrollTo(0,listOfMessages.getHeight());
         // Inflate the layout for this fragment
         return root;
     }

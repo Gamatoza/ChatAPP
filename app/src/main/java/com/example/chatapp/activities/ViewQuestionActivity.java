@@ -281,7 +281,9 @@ public class ViewQuestionActivity extends AppCompatActivity{
                     ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Picasso.get().load(uri)
+                            Picasso.get()
+                                    .load(uri)
+                                    .error(R.drawable.no_image)
                                     .into(avatar);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -326,7 +328,9 @@ public class ViewQuestionActivity extends AppCompatActivity{
                     ref.child(model.getUserID()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            Picasso.get().load(uri)
+                            Picasso.get()
+                                    .load(uri)
+                                    .error(R.drawable.no_image)
                                     .into(avatar);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
