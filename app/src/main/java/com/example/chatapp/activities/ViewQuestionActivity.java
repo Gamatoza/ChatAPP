@@ -77,6 +77,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private String trackedInLibraryID = "";
 
     private ValueEventListener mainListener;
+    private ListView listOfMessages;
 
 
     //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
@@ -245,7 +246,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private void displayAllMessages() {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
         //if(ref == null) ref.setValue(KEY);
-        final ListView listOfMessages = findViewById(R.id.list_of_messages);
+        listOfMessages = findViewById(R.id.list_of_messages);
 
         adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this, Message.class, R.layout.left_mes, ref) {
             @SuppressLint("ResourceAsColor")
@@ -363,6 +364,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
+
+    }
+
+    void updateAvatars(){
 
     }
 
