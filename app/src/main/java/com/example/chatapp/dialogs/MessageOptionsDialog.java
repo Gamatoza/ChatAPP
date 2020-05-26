@@ -33,7 +33,9 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
     private String FORUM_KEY = "";
 
     Question current;
-
+    DatabaseReference Qref;
+    String queString = "";
+    Boolean isThatMessage = false;
 
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -47,48 +49,32 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
         Boolean isAuthor = getArguments().getBoolean("is_author");
 
         if(isAuthor){
-            Button btn = v.findViewById(R.id.btnSetAnswer);
+            final Button btn = v.findViewById(R.id.btnSetAnswer);
             btn.setVisibility(View.VISIBLE);
-            btn.setOnClickListener(new OnClickListener() {
+            btn.setOnClickListener(this);
+            Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
+            Qref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onClick(View v) {
-                    DatabaseReference Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
-                    final DatabaseReference finalRef = Qref;
-                    Qref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()) {
 
-                                current = (Question) dataSnapshot.getValue(Question.class);
-                                /*
-                                if (current.isDecided() != null)
-                                    if (!current.isDecided() && current.getAnswer() == null) //если ответа нет
-                                    {
-                                        current.setAnswer(MESSAGE_KEY); //ставит вопрос
-                                    } else if (current.isDecided() && current.getAnswer() != null) { //если ответ есть и id совпадают
-                                        current.isDecided(false);
-                                        current.setAnswer(null); //убирает
-                                    } else {
-                                        current.setAnswer(MESSAGE_KEY); //переназначает
-                                    }
-                                    */
-                                current.setAnswer(MESSAGE_KEY); //ставит вопрос
-                                finalRef.setValue(current);
+                        current = (Question) dataSnapshot.getValue(Question.class);
+                        btn.setText("SET an answer");
+                        if (current.isDecided())
+                            if (current.getAnswer().contains(MESSAGE_KEY)) {
+                                btn.setText("REMOVE an answer");
+                                isThatMessage = true;
                             }
-                        }
+                    }
+                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    dismiss();
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
-        }
 
+        }
 
         return v;
     }
@@ -107,6 +93,28 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
                         .child("Messages")
                         .child(FORUM_KEY).child(MESSAGE_KEY)
                         .getRef().removeValue();
+                if(isThatMessage){
+                    current.setAnswer(null);
+                    current.isDecided(false);
+                    Qref.setValue(current);
+                }
+                dismiss();
+                break;
+            case R.id.btnSetAnswer:
+
+                if (!current.isDecided() && (current.getAnswer() == null || current.getAnswer().isEmpty())) //если ответа нет
+                {
+                    current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                } else if (current.isDecided() && current.getAnswer() != null && current.getAnswer().contains(MESSAGE_KEY)) { //если ответ есть и id совпадают
+                    current.setAnswer(null); //убирает
+                    current.isDecided(false);
+                } else {
+                    current.setAnswer(MESSAGE_KEY); //переназначает
+                }
+
+
+                //current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                Qref.setValue(current);
                 dismiss();
                 break;
             default:

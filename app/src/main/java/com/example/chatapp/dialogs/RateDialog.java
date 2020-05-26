@@ -25,6 +25,9 @@ public class RateDialog extends DialogFragment implements OnClickListener {
     private static String FORUM_KEY = "";
 
     Question current;
+    DatabaseReference Qref;
+    String queString = "";
+
 
 
     final String LOG_TAG = "myLogs";
@@ -33,13 +36,33 @@ public class RateDialog extends DialogFragment implements OnClickListener {
 
         FORUM_KEY = getArguments().getString("forum_key");
         MESSAGE_KEY = getArguments().getString("message_key");
+
+        Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
+        Qref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    current = (Question) dataSnapshot.getValue(Question.class);
+                    queString = "Do you really want to SET this message as a response?";
+                    if(current.isDecided())
+                    if(current.getAnswer().contains(MESSAGE_KEY)){
+                        queString = "Do you really want to REMOVE the tag from this message?";
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }});
+
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Title!")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("Yes", this)
                 .setNegativeButton("Cancel", this)
                 //.setNeutralButton(R.string.maybe, this)
-                .setMessage(R.string.rate_message_text);
+                .setMessage(queString);
         return adb.create();
     }
 
@@ -48,36 +71,20 @@ public class RateDialog extends DialogFragment implements OnClickListener {
         switch (which) {
             case Dialog.BUTTON_POSITIVE:
                 i = R.string.yes;
-                DatabaseReference Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
-                final DatabaseReference finalRef = Qref;
-                Qref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
 
-                            current = (Question) dataSnapshot.getValue(Question.class);
-                            /*
-                            if (current.isDecided() != null)
-                                if (!current.isDecided() && current.getAnswer() == null) //если ответа нет
-                                {
-                                    current.setAnswer(MESSAGE_KEY); //ставит вопрос
-                                } else if (current.isDecided() && current.getAnswer() != null) { //если ответ есть и id совпадают
-                                    current.isDecided(false);
-                                    current.setAnswer(null); //убирает
-                                } else {
-                                    current.setAnswer(MESSAGE_KEY); //переназначает
-                                }
-                            */
+                if (!current.isDecided() && (current.getAnswer() == null || current.getAnswer().isEmpty())) //если ответа нет
+                {
+                    current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                } else if (current.isDecided() && current.getAnswer() != null && current.getAnswer().contains(MESSAGE_KEY)) { //если ответ есть и id совпадают
+                    current.setAnswer(null); //убирает
+                    current.isDecided(false);
+                } else {
+                    current.setAnswer(MESSAGE_KEY); //переназначает
+                }
 
-                            current.setAnswer(MESSAGE_KEY); //ставит вопрос
-                            finalRef.setValue(current);
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }});
+                //current.setAnswer(MESSAGE_KEY); //ставит вопрос
+                Qref.setValue(current);
 
                 dismiss();
                 break;
