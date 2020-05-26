@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -79,6 +81,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private ValueEventListener mainListener;
     private ListView listOfMessages;
 
+    private StorageReference storageRef;
+
 
     //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
@@ -115,6 +119,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         activity_question = findViewById(R.id.activity_question);
 
+        storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
+
+        inflater = (LayoutInflater) this.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
         final DatabaseReference HistoryRef = FirebaseDatabase.getInstance().getReference()
                 .child("UsersLibrary")
                 .child(user.getUid())
@@ -128,6 +136,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         textViewDescription = findViewById(R.id.textViewDescription);
         //endregion
 
+        //region Получение текущего вопроса
         mainListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -163,6 +172,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
             }
         };
         mainRef.child("Forums").child(FORUM_ID).addValueEventListener(mainListener);
+
+        //endregion
 
         //region Добавление обработчика на посыл сообщения
 
@@ -241,6 +252,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
     }
 
 
+    LayoutInflater inflater;
+
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
@@ -258,25 +271,12 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 //inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
                 final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
-                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
 
-                ref.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.get()
-                                .load(uri)
-                                .into(avatar);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        avatar.setImageResource(R.drawable.no_image);
-                    }
-                });
+
 
                 //Если это сообщение является ответом, оно помечается
                 if (model.getId().equals(currentQuestion.getAnswer())) {
-                    v.setBackgroundResource(R.color.colorHaveAnswer);
+                    v.setBackgroundResource(R.drawable.side_answer);
                     //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
 
                 } else {
@@ -307,7 +307,19 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if (model.getUserID().equals(user.getUid())) {
                     //придумать как закинуть облачко на правую сторону
-
+                    storageRef.child(user.getUid() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(avatar);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            avatar.setImageResource(R.drawable.no_image);
+                        }
+                    });
                     relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -338,6 +350,19 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
                 } else {
                     relativeLayout.setOnClickListener(null);
+                    storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Picasso.get()
+                                    .load(uri)
+                                    .into(avatar);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            avatar.setImageResource(R.drawable.no_image);
+                        }
+                    });
                     if(isAuthor){
                         relativeLayout.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -364,10 +389,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
-
-    }
-
-    void updateAvatars(){
 
     }
 

@@ -26,9 +26,9 @@ public class RateDialog extends DialogFragment implements OnClickListener {
 
     Question current;
     DatabaseReference Qref;
-    String queString = "";
+    String queString = "Do you really want to SET this message as a response?";
 
-
+    AlertDialog.Builder adb;
 
     final String LOG_TAG = "myLogs";
 
@@ -48,6 +48,7 @@ public class RateDialog extends DialogFragment implements OnClickListener {
                     if(current.getAnswer().contains(MESSAGE_KEY)){
                         queString = "Do you really want to REMOVE the tag from this message?";
                     }
+                    adb.setMessage(queString);
                 }
             }
 
@@ -56,7 +57,7 @@ public class RateDialog extends DialogFragment implements OnClickListener {
 
             }});
 
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
+         adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Title!")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setPositiveButton("Yes", this)
