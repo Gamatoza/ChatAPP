@@ -2,6 +2,7 @@ package com.example.chatapp.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -27,6 +28,7 @@ import com.example.chatapp.dialogs.RateDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,7 +64,10 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
     private RelativeLayout activity_question;           //Основной бэкграунд
-    private FirebaseListAdapter<Message> adapter;       //Адаптер для обновления сообщений
+
+    private FirebaseRecyclerAdapter<Message,MessageViewHolder> adapter; //Адаптер для обновления сообщений
+    //private FirebaseListAdapter<Message> adapter;
+
     private EmojiconEditText emojiconEditText;          //Сообщение, одновременно является обработчиком смайлов
     private ImageView emojiButton, submitButton;        //Два изображения, отправка и вызов смайлов
     private EmojIconActions emojIconActions;            //Окно где был выбран смайл
@@ -79,12 +84,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private String trackedInLibraryID = "";
 
     private ValueEventListener mainListener;
-    private ListView listOfMessages;
 
+    private RecyclerView recyclerView;
     private StorageReference storageRef;
-
-
-    //private LayoutInflater inflater;                  //TODO  Смещение сообщения влево или вправо
 
     private static String LOG_TAG;
 
@@ -121,12 +123,14 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
 
-        inflater = (LayoutInflater) this.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
         final DatabaseReference HistoryRef = FirebaseDatabase.getInstance().getReference()
                 .child("UsersLibrary")
                 .child(user.getUid())
                 .child("History");
+
+        recyclerView = findViewById(R.id.list_of_messages);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setHasFixedSize(false);
 
         //region Получение текущего вопроса и назначение заголовка с вопросом
         //Достаем текущий форум и сразу назначаем вопрос
@@ -251,76 +255,59 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     }
 
-
-    LayoutInflater inflater;
-
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
-        //if(ref == null) ref.setValue(KEY);
-        listOfMessages = findViewById(R.id.list_of_messages);
 
-        adapter = new FirebaseListAdapter<Message>(ViewQuestionActivity.this, Message.class, R.layout.left_mes, ref) {
-            @SuppressLint("ResourceAsColor")
+        adapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(
+                Message.class,
+                R.layout.left_mes,
+                MessageViewHolder.class,
+                ref) {
             @Override
-            protected void populateView(View v, final Message model, int position) {
+            protected void populateViewHolder(final MessageViewHolder mvh, final Message model, int i) {
 
-                final RelativeLayout relativeLayout;
-                relativeLayout = v.findViewById(R.id.dsMessage);
-                //inflater = (LayoutInflater)v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                final ImageView avatar = v.findViewById(R.id.imageViewAvatar);
-
-
+                mvh.relativeLayout.setOnClickListener(null);
+                storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get()
+                                .load(uri)
+                                .into(mvh.avatar);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        mvh.avatar.setImageResource(R.drawable.no_image);
+                    }
+                });
 
                 //Если это сообщение является ответом, оно помечается
-                if (model.getId().equals(currentQuestion.getAnswer())) {
-                    v.setBackgroundResource(R.drawable.side_answer);
-                    //  v = inflater.inflate(R.layout.right_mes,relativeLayout);
-
-                } else {
-                    v.setBackgroundResource(android.R.color.background_light);
-                    // v = inflater.inflate(R.layout.left_mes,relativeLayout);
-
+                if (currentQuestion.isDecided()) {
+                    if (model.getId().equals(currentQuestion.getAnswer())) {
+                        mvh.relativeLayout.setBackgroundResource(R.drawable.side_answer);
+                    } else {
+                        mvh.relativeLayout.setBackgroundResource(android.R.color.background_light);
+                    }
                 }
 
-
-                //Назначение информации в облачке
-                TextView mess_user, mess_time;
-                final BubbleTextView mess_text;
-                mess_user = v.findViewById(R.id.message_user);
-                mess_time = v.findViewById(R.id.message_time);
-                mess_text = v.findViewById(R.id.message_text);
-
-
-                if (model.getUserID().equals(user.getUid())) mess_user.setText("You");
+                if (model.getUserID().equals(user.getUid())) mvh.mess_user.setText("You");
                 else if (model.getUserDisplayName() != null)
-                    mess_user.setText(model.getUserDisplayName());
-                else mess_user.setText(model.getUserEmail());
+                    mvh.mess_user.setText(model.getUserDisplayName());
+                else mvh.mess_user.setText(model.getUserEmail());
 
-                mess_text.setText(model.getText());
+                mvh.mess_text.setText(model.getText());
+
                 @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss" );
-                mess_time.setText(format.format(model.getMessageTime()));
+                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                mvh.mess_time.setText(format.format(model.getMessageTime()));
 
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if (model.getUserID().equals(user.getUid())) {
                     //придумать как закинуть облачко на правую сторону
-                    storageRef.child(user.getUid() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Picasso.get()
-                                    .load(uri)
-                                    .into(avatar);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            avatar.setImageResource(R.drawable.no_image);
-                        }
-                    });
-                    relativeLayout.setOnClickListener(new View.OnClickListener() {
+
+                    mvh.relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             final MessageOptionsDialog dlg = new MessageOptionsDialog();
@@ -333,56 +320,26 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             dlg.show(getFragmentManager(), "dlg");
                         }
                     });
-                    /*
-                    deleteImageView.setVisibility(View.VISIBLE);
-                    final DeleteDialog dlg = new DeleteDialog();
-
-                    deleteImageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Bundle args = new Bundle();
-                            args.putString("forum_key", FORUM_ID);
-                            args.putString("message_key",model.getId());
-                            dlg.setArguments(args);
-                            dlg.show(getFragmentManager(),"dlg");
-                        }
-                    });*/
 
                 } else {
-                    relativeLayout.setOnClickListener(null);
-                    storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Picasso.get()
-                                    .load(uri)
-                                    .into(avatar);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            avatar.setImageResource(R.drawable.no_image);
-                        }
-                    });
-                    if(isAuthor){
-                        relativeLayout.setOnClickListener(new View.OnClickListener() {
+
+                    if (isAuthor) {
+                        mvh.relativeLayout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 RateDialog dlg = new RateDialog();
                                 Bundle args = new Bundle();
-                                args.putString("forum_key",FORUM_ID);
-                                args.putString("message_key",model.getId());
+                                args.putString("forum_key", FORUM_ID);
+                                args.putString("message_key", model.getId());
                                 dlg.setArguments(args);
-                                dlg.show(getFragmentManager(),"dlg");
+                                dlg.show(getFragmentManager(), "dlg");
                             }
                         });
                     }
                 }
-                //else deleteImageView.setVisibility(View.GONE);
             }
         };
-
-        listOfMessages.setAdapter(adapter);
-
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -392,21 +349,37 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     }
 
-    class MessageAdapter<T> extends FirebaseListAdapter<T> implements Adapter {
 
-        public MessageAdapter(Activity activity, Class modelClass, int modelLayout, Query ref) {
-            super(activity, modelClass, modelLayout, ref);
+    private static class MessageViewHolder extends RecyclerView.ViewHolder{
+        final RelativeLayout relativeLayout;
+        final ImageView avatar;
+        TextView mess_user, mess_time;
+        final TextView mess_text;
+
+        public MessageViewHolder(@NonNull View v) {
+            super(v);
+            relativeLayout = v.findViewById(R.id.dsMessage);
+            avatar = v.findViewById(R.id.imageViewAvatar);
+            mess_user = v.findViewById(R.id.message_user);
+            mess_time = v.findViewById(R.id.message_time);
+            mess_text = v.findViewById(R.id.message_text);
+
+            /*FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics")
+                    .child(FirebaseAuth.getInstance().getUid() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get()
+                            .load(uri)
+                            .into(avatar);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    avatar.setImageResource(R.drawable.no_image);
+                }
+            });*/
+
         }
-
-        public MessageAdapter(Activity activity, Class modelClass, int modelLayout, DatabaseReference ref) {
-            super(activity, modelClass, modelLayout, ref);
-        }
-
-        @Override
-        protected void populateView(View v, T model, int position) {
-
-        }
-
     }
 
 
