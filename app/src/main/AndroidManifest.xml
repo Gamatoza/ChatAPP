@@ -9,16 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NavigationActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <service
+            android:name=".services.PushMessagingService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity
+            android:name=".NavigationActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.userlibrary.HistoryActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.userlibrary.TrackedActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.userlibrary.CreatedActivity" />
+        <activity android:name=".activities.userlibrary.CreatedActivity" />
         <activity
             android:name=".activities.ChangeMessageActivity"
             android:windowSoftInputMode="stateHidden" />

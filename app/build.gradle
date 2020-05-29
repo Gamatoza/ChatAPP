@@ -83,6 +83,10 @@ dependencies {
     //Dinamic Text
     implementation 'me.grantland:autofittextview:0.2.1'
 
+    //Push messaging
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+
+
 }
 
 apply plugin: 'com.android.application'

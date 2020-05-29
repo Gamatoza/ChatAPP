@@ -43,10 +43,10 @@ public class RateDialog extends DialogFragment implements OnClickListener {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     current = (Question) dataSnapshot.getValue(Question.class);
-                    queString = "Do you really want to SET this message as a response?";
+                    queString = getString(R.string.rateOnSet);
                     if(current.isDecided())
                     if(current.getAnswer().contains(MESSAGE_KEY)){
-                        queString = "Do you really want to REMOVE the tag from this message?";
+                        queString = getString(R.string.rateOnRemove);
                     }
                     adb.setMessage(queString);
                 }
@@ -58,10 +58,10 @@ public class RateDialog extends DialogFragment implements OnClickListener {
             }});
 
          adb = new AlertDialog.Builder(getActivity())
-                .setTitle("Title!")
+                .setTitle(R.string.rateTitle)
                 .setIcon(android.R.drawable.ic_dialog_info)
-                .setPositiveButton("Yes", this)
-                .setNegativeButton("Cancel", this)
+                .setPositiveButton(R.string.yes, this)
+                .setNegativeButton(R.string.cansel, this)
                 //.setNeutralButton(R.string.maybe, this)
                 .setMessage(queString);
         return adb.create();

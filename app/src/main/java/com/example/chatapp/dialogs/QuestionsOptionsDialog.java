@@ -39,7 +39,7 @@ public class QuestionsOptionsDialog extends DialogFragment implements OnClickLis
 
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        getDialog().setTitle("Question options");
+        getDialog().setTitle(R.string.titleQiestionOptions);
         View v = inflater.inflate(R.layout.questions_options_dialog, null);
         v.findViewById(R.id.btnChange).setOnClickListener(this);
         v.findViewById(R.id.btnDelete).setOnClickListener(this);

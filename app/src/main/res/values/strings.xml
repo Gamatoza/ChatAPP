@@ -56,6 +56,15 @@
     <string name="tracked">Tracked</string>
     <string name="history">History</string>
     <string name="communicate_item">Communicate</string>
+    <string name="log_out">Log out</string>
+    <string name="email_not_verified">Email Not Verified (Click to Verify)</string>
+    <string name="setAnswer">SET answer</string>
+    <string name="removeAnswer">REMOVE an answer</string>
+    <string name="titleQiestionOptions">Question options</string>
+    <string name="titleMessageOptions">Message options</string>
+    <string name="rateOnSet">Do you really want to SET this message as a response?</string>
+    <string name="rateOnRemove">Do you really want to REMOVE the tag from this message?</string>
+    <string name="rateTitle">Title!</string>
 
     <!--Common-->
     <string name="cansel">Cancel</string>
@@ -63,7 +72,17 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="maybe">Maybe</string>
+
+
     <string name="navigation_drawer_open" />
     <string name="navigation_drawer_close" />
-    <string name="log_out">Log out</string>
+
+    <!--About-->
+    <string name="about_program">About program</string>
+    <string name="message_aboutProgram">
+        Program version 1.0\nThe program is not subject to a commercial company and is distributed for informational purposes only\nThe author of the program is not responsible for possible breakdowns inside the program, but regularly updates it at the request of testers\nAuthors:\nProgrammer: Vlasov T. S.\nDesigner: T. S. Vlasov\nTesters:\nAndrey Migutsky\nArthur Lange\nVictor Matveev\nMax Nirov\nIgor Ulyanov\nI\nThank you for using this product!
+    </string>
+    <string name="understand">Got it</string>
+
+
 </resources>
