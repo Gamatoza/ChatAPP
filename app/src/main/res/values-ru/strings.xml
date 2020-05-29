@@ -20,7 +20,7 @@
     <string name="rate_message_text">Вы действительно хотите пометить это сообщение как ответ?</string>
 
     <string name="TextPreview">
-        <b> Добро пожаловать в чат форума!</b>\n
+        <b> Добро пожаловать в Форум-чат!</b>\n
             Здесь вы можете быстро получить ответ на любой свой вопрос, если, конечно, ответ на него есть, и наши пользователи его знают.\n
             Во-первых, я рекомендую вам поставить свой собственный аватар и назначить ник в <b>настройках </b>, чтобы люди знали, кто за это отвечает, и что было бы красиво.\n
             Чтобы задать вопрос, перейдите на вкладку <b>Форумы</b> и нажмите кнопку <b>добавить</b> вопрос.\n
@@ -55,6 +55,15 @@
     <string name="tracked">Отслеживаемые</string>
     <string name="history">История</string>
     <string name="communicate_item">Пользовательские</string>
+    <string name="log_out">Выйти из аккаунта</string>
+    <string name="email_not_verified">Почта на зарегестрирована (Нажмите что бы послать подтверждающее письмо)</string>
+    <string name="setAnswer">НАЗНАЧИТЬ ответ</string>
+    <string name="removeAnswer">УБРАТЬ ответ</string>
+    <string name="titleQiestionOptions">Опции вопроса</string>
+    <string name="titleMessageOptions">Опции сообщения</string>
+    <string name="rateOnSet">Вы точно хотите НАЗНАЧИТЬ это сообщение как ответ?</string>
+    <string name="rateOnRemove">Вы точно хотите УБРАТЬ флаг ответа с этого сообщения?</string>
+    <string name="rateTitle">Заголовок!</string>
 
     <!--Common-->
     <string name="cansel">Отмена</string>
@@ -63,8 +72,17 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="maybe">Может быть</string>
+
+
     <string name="navigation_drawer_open" />
     <string name="navigation_drawer_close" />
-    <string name="log_out">Выйти из аккаунта</string>
+
+    <!--About-->
+    <string name="about_program">О программе</string>
+    <string name="message_aboutProgram">
+        Версия программы 1.0\nПрограмма не подлежит коммерческой компании и распространяется в сугубо ознакомительных целях\nАвтор программы не несет ответственности за возможные поломки внутри программы, однако регулярно ее обновляет по просьбам тестировщиков\nАвторы:\nПрограммист: Власов Т.С.\nДизайнер: Власов Т.С.\nТестировщики:\nАндрей Магуцкий\nАртур Ланге\nВиктор Матвеев\nМакс Ниров\nИгорь Ульянов\nЯ\nСпасибо что пользуетесь этим продуктом!
+    </string>
+    <string name="understand">Понял</string>
+
 
 </resources>

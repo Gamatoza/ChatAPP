@@ -28,5 +28,8 @@
                 android:title="@string/settings" />
         </menu>
     </item>
-
+    <item
+        android:id="@+id/nav_aboutProgram"
+        android:icon="@drawable/ic_about_black"
+        android:title="@string/about_program" />
 </menu>

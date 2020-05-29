@@ -208,10 +208,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             if(user.isEmailVerified()){
-                textView.setText("Email Verified");
+                textView.setText(R.string.verification);
             } else {
 
-                   textView.setText("Email Not Verified (Click to Verify)");
+                   textView.setText(R.string.email_not_verified);
                    textView.setOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View v) {

@@ -39,7 +39,7 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
 
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        getDialog().setTitle("Message options");
+        getDialog().setTitle(R.string.titleMessageOptions);
         View v = inflater.inflate(R.layout.message_options_dialog, null);
         v.findViewById(R.id.btnChange).setOnClickListener(this);
         v.findViewById(R.id.btnDelete).setOnClickListener(this);
@@ -59,10 +59,10 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
                     if(dataSnapshot.exists()) {
 
                         current = (Question) dataSnapshot.getValue(Question.class);
-                        btn.setText("SET an answer");
+                        btn.setText(R.string.setAnswer);
                         if (current.isDecided())
                             if (current.getAnswer().contains(MESSAGE_KEY)) {
-                                btn.setText("REMOVE an answer");
+                                btn.setText(R.string.removeAnswer);
                                 isThatMessage = true;
                             }
                     }

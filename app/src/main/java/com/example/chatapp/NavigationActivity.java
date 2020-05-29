@@ -18,6 +18,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.chatapp.activities.userlibrary.CreatedActivity;
+import com.example.chatapp.dialogs.AboutProgram;
 import com.example.chatapp.fragments.FragmentForums;
 import com.example.chatapp.fragments.FragmentLittleHelp;
 import com.example.chatapp.fragments.FragmentSettings;
@@ -43,6 +44,10 @@ public class NavigationActivity extends AppCompatActivity
 
     private FirebaseAuth mAuth;
     private View header;
+
+
+    AboutProgram dlgAP = new AboutProgram();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +134,9 @@ public class NavigationActivity extends AppCompatActivity
                 break;
             case R.id.nav_settings:
                 ftrans.replace(R.id.container, settings);
+                break;
+            case R.id.nav_aboutProgram:
+                dlgAP.show(getFragmentManager(), "dlg");
                 break;
         }
          ftrans.commit();
