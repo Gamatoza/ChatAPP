@@ -13,14 +13,14 @@
             android:id="@+id/btnChange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Change message">
+            android:text="@string/change_question">
         </Button>
 
         <Button
             android:id="@+id/btnDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Delete message">
+            android:text="@string/delete_question">
         </Button>
 
     </LinearLayout>

@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Чат-форум</string>
+    <string name="title_activity_sign_up">Вход</string>
+    <string name="prompt_email">Логин</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войдите или зарегистрируйтесь</string>
+    <string name="action_sign_in_short">Вход</string>
+    <string name="welcome">"Добро пожаловать !"</string>
+    <string name="invalid_username">Неверный логин</string>
+    <string name="invalid_password">Пароль должен состоять более чем из 6 символов</string>
+    <string name="login_failed">"Провал аутентификации"</string>
+    <string name="LoginText">Нету аккаунта? <u><b>Зарегестрируйтесь!</b></u></string>
+    <string name="SignUpText">Уже есть аккаунт? <u><b>Авторизируйтесь!</b></u></string>
+    <string name="Forgot">Забыли пароль? <u><b>Выслать письмо для восстановления</b></u></string>
+
+    <!--Dialog strings-->
+    <string name="dialog_1">Диалог 1</string>
+    <string name="dialog_2">Диалог 2</string>
+    <string name="delete_message_text">Вы действительно хотите удалить это сообщение?</string>
+    <string name="rate_message_text">Вы действительно хотите пометить это сообщение как ответ?</string>
+
+    <string name="TextPreview">
+        <b> Добро пожаловать в чат форума!</b>\n
+            Здесь вы можете быстро получить ответ на любой свой вопрос, если, конечно, ответ на него есть, и наши пользователи его знают.\n
+            Во-первых, я рекомендую вам поставить свой собственный аватар и назначить ник в <b>настройках </b>, чтобы люди знали, кто за это отвечает, и что было бы красиво.\n
+            Чтобы задать вопрос, перейдите на вкладку <b>Форумы</b> и нажмите кнопку <b>добавить</b> вопрос.\n
+            Если вы хотите просмотреть вопросы и найти те, на которые уже были даны ответы, или ответить на вопрос самостоятельно, вы все равно можете использовать <b> Поиск </b>в той же вкладке.\n
+            Если вы хотите добавить вопрос к отслеживаемым, вам просто нужно нажать на Звездочку прямо в самом вопросе, чтобы узнать, когда на него будет дан ответ.\n
+            Чтобы просмотреть вопросы, которые вы <b>Cоздали</b> или те, которые вы отметили как <b>Отслеживаемые</b>, перейдите на вкладку Библиотека. есть не только вышеуказанные критерии, но и история просмотренных вопросов, если вы забыли, где вы их просматривали.\n
+        <b> Приятного использования!</b>
+    </string>
+
+    <string name="change_message">Изменить сообщение</string>
+    <string name="delete_message">Удалить сообщение</string>
+    <string name="change_question">Изменить вопрос</string>
+    <string name="delete_question">Удалить вопрос</string>
+    <string name="question_name_create">Название вопроса</string>
+    <string name="question_content_create">Сам вопрос</string>
+    <string name="push_on_public">Опубликовать</string>
+    <string name="clear_history">Отчистить историю</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="login">Логин</string>
+    <string name="camera_helper">Нажмите на картинку что бы поменять аватарку</string>
+    <string name="enter_display_name">Введите отображаемое имя</string>
+    <string name="verification">Почта подтверждена</string>
+    <string name="create">Создать</string>
+    <string name="latest_questions">Последние форумы</string>
+    <string name="top_questions">ТОП Вопросов</string>
+    <string name="forum">Форум</string>
+    <string name="library">Библиотека</string>
+    <string name="little_helper">Помощь</string>
+    <string name="settings">Настройки</string>
+    <string name="created">Созданные</string>
+    <string name="tracked">Отслеживаемые</string>
+    <string name="history">История</string>
+    <string name="communicate_item">Пользовательские</string>
+
+    <!--Common-->
+    <string name="cansel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="search">Поиск</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="maybe">Может быть</string>
+    <string name="navigation_drawer_open" />
+    <string name="navigation_drawer_close" />
+    <string name="log_out">Выйти из аккаунта</string>
+
+</resources>

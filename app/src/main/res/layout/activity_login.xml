@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:ems="10"
-            android:hint="Login"
+            android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextLogin"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword" />
     </RelativeLayout>
     <RelativeLayout
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Login" />
+            android:text="@string/login" />
         <TextView
             android:id="@+id/textViewSignUp"
             android:layout_below="@id/buttonLogin"

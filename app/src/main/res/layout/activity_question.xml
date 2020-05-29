@@ -31,7 +31,6 @@ tools:context=".activities.ViewQuestionActivity"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
-                android:hint="Какое то описание"
 
                 />
         </me.grantland.widget.AutofitLayout>
@@ -51,7 +50,6 @@ tools:context=".activities.ViewQuestionActivity"
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Какой то заголовок"
             android:textSize="15sp"
             />
 

@@ -16,37 +16,9 @@
     <!--Dialog strings-->
     <string name="dialog_1">Dialog 1</string>
     <string name="dialog_2">Dialog 2</string>
-    <string name="delete_message_text">Вы действительно хотите удалить это сообщение?</string>
+    <string name="delete_message_text">Do you really want to remove this message?</string>
     <string name="rate_message_text">Do you really want to mark this message as a response?</string>
 
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="maybe">Maybe</string>
-    <string name="title_activity_basic_test">BasicTestActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-
-    <!--Navigation-->
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="import_item">Import</string>
-    <string name="gallery_item">Gallery</string>
-    <string name="slideshow_item">Slideshow</string>
-    <string name="tools_item">Tools</string>
-    <string name="communicate_item">Communicate</string>
-    <string name="share_item">Share</string>
-    <string name="send_item">Send</string>
     <string name="TextPreview">
         <b>Welcome to Forum Chat!</b>\n
         Here you can quickly get an answer to any of your questions, if, of course, there is an answer to it, and our users know it.\n
@@ -57,4 +29,41 @@
         In order to view the questions that you <b>Created</b> or those that you marked as <b>Tracked</b>, go to the Library tab. there are not only the above criteria, but also the <b>History</b> of viewed questions, in case you forgot where you viewed them.\n
         <b>Enjoy your use!</b>
     </string>
+
+    <string name="change_message">Change message</string>
+    <string name="delete_message">Delete message</string>
+    <string name="change_question">Change question</string>
+    <string name="delete_question">Delete question</string>
+    <string name="question_name_create">Question name</string>
+    <string name="question_content_create">Question content</string>
+    <string name="push_on_public">Push on public</string>
+    <string name="search">Search</string>
+    <string name="clear_history">Clear history</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="camera_helper">Tap on camera to choose profile picture</string>
+    <string name="enter_display_name">Enter Display Name</string>
+    <string name="verification">Verified</string>
+    <string name="create">Create</string>
+    <string name="latest_questions">Latest Questions</string>
+    <string name="top_questions">TOP Questions</string>
+    <string name="forum">Forum</string>
+    <string name="library">Library</string>
+    <string name="little_helper">FAQ</string>
+    <string name="settings">Settings</string>
+    <string name="created">Created</string>
+    <string name="tracked">Tracked</string>
+    <string name="history">History</string>
+    <string name="communicate_item">Communicate</string>
+
+    <!--Common-->
+    <string name="cansel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="maybe">Maybe</string>
+    <string name="navigation_drawer_open" />
+    <string name="navigation_drawer_close" />
+    <string name="log_out">Log out</string>
 </resources>

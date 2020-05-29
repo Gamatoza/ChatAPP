@@ -1,4 +1,4 @@
-package com.example.chatapp.activities.old;
+package com.example.chatapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,9 +10,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatapp.R;
-import com.example.chatapp.activities.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_settings);
 
         editText = (EditText) findViewById(R.id.editTextDisplayName);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -118,31 +114,6 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.menuLogout:
-
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                startActivity(new Intent(this,LoginActivity.class));
-
-                break;
-        }
-
-        return true;
     }
 
     private void saveUserInformation() {

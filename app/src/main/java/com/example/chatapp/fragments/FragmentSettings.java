@@ -124,7 +124,7 @@ public class FragmentSettings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        root = inflater.inflate(R.layout.activity_profile, container, false);
+        root = inflater.inflate(R.layout.activity_settings, container, false);
 
         editText = (EditText) root.findViewById(R.id.editTextDisplayName);
         imageView = (ImageView) root.findViewById(R.id.imageView);

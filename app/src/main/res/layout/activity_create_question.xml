@@ -12,20 +12,20 @@
         android:id="@+id/question_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Question name"
+        android:hint="@string/question_name_create"
         android:textSize="20dp"/>
 
     <EditText
         android:id="@+id/question_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Question content"
+        android:hint="@string/question_content_create"
         android:textSize="20dp" />
     <Button
         android:id="@+id/submit_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Push on public"
+        android:text="@string/push_on_public"
         android:layout_gravity="center"
         />
 </LinearLayout>

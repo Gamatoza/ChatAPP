@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25dp"
-        android:text="Изменить сообщение"
+        android:text="@string/change_question"
         android:layout_alignParentTop="true"/>
     <EditText
         android:id="@+id/editTextTitle"
@@ -37,7 +37,7 @@
                 android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Отмена"
+                android:text="@string/cansel"
                 android:layout_alignParentLeft="true"
                 />
             <Button
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="Сохранить"/>
+                android:text="@string/save"/>
         </RelativeLayout>
 
 
