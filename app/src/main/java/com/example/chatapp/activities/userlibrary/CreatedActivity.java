@@ -24,6 +24,7 @@ import com.example.chatapp.dialogs.QuestionsOptionsDialog;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class CreatedActivity extends AppCompatActivity {
 
     private ArrayList<Question> searchList;
     private EditText searchText;
+
+    FirebaseListAdapter<String> adapter;
 
     String LOG_TAG = "Логи";
 
@@ -98,6 +102,18 @@ public class CreatedActivity extends AppCompatActivity {
 
 
         updateUI();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     private class SearchAdapter extends BaseAdapter {
@@ -247,9 +263,18 @@ public class CreatedActivity extends AppCompatActivity {
                 .child("UsersLibrary")
                 .child(user.getUid());
 
-        FirebaseListAdapter<String> lightAdapter = new FirebaseListAdapter<String>(this, String.class, R.layout.list_questions, myRef.child("Created")) {
+        Query query = myRef.child("Created");
+
+        FirebaseListOptions options = new FirebaseListOptions.Builder<String>()
+                .setQuery(query,String.class)
+                .setLayout(R.layout.list_questions)
+                .build();
+
+
+
+        adapter = new FirebaseListAdapter<String>(options) {
             @Override
-            protected void populateView(final View v, final String model, final int position) {
+            protected void populateView(@NonNull View v, @NonNull String model,final int position) {
 
                 final TextView text, owner;
                 final ImageView imageView;
@@ -308,7 +333,7 @@ public class CreatedActivity extends AppCompatActivity {
             }
         };
 
-        list.setAdapter(lightAdapter);
+        list.setAdapter(adapter);
     }
 
 }

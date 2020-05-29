@@ -28,11 +28,14 @@ import com.example.chatapp.dialogs.RateDialog;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.github.library.bubbleview.BubbleTextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -255,18 +258,32 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
         DatabaseReference ref = mainRef.child("Messages").child(FORUM_ID);
 
-        adapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(
-                Message.class,
-                R.layout.left_mes,
-                MessageViewHolder.class,
-                ref) {
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Message>()
+                .setQuery(ref,Message.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(options) {
+            @NonNull
             @Override
-            protected void populateViewHolder(final MessageViewHolder mvh, final Message model, int i) {
+            public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_mes, parent, false);
+                return new MessageViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final MessageViewHolder mvh, int position, @NonNull final Message model) {
 
                 mvh.relativeLayout.setOnClickListener(null);
                 storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -303,6 +320,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 mvh.mess_time.setText(format.format(model.getMessageTime()));
 
+                final String id = model.getId();
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if (model.getUserID().equals(user.getUid())) {
                     //придумать как закинуть облачко на правую сторону
@@ -313,7 +331,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             final MessageOptionsDialog dlg = new MessageOptionsDialog();
                             Bundle args = new Bundle();
                             args.putString("forum_key", FORUM_ID);
-                            args.putString("message_key", model.getId());
+                            args.putString("message_key", id);
                             args.putBoolean("is_author", isAuthor);
 
                             dlg.setArguments(args);
@@ -330,7 +348,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                                 RateDialog dlg = new RateDialog();
                                 Bundle args = new Bundle();
                                 args.putString("forum_key", FORUM_ID);
-                                args.putString("message_key", model.getId());
+                                args.putString("message_key", id);
                                 dlg.setArguments(args);
                                 dlg.show(getFragmentManager(), "dlg");
                             }
@@ -338,7 +356,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     }
                 }
             }
+
         };
+        adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
 
@@ -355,6 +375,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         final ImageView avatar;
         TextView mess_user, mess_time;
         final TextView mess_text;
+
 
         public MessageViewHolder(@NonNull View v) {
             super(v);

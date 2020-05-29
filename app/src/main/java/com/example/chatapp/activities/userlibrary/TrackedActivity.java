@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.example.chatapp.activities.ViewQuestionActivity;
 import com.example.chatapp.source.Question;
 import com.example.chatapp.source.QuestionInfo;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ public class TrackedActivity extends AppCompatActivity {
 
     private ArrayList<Question> searchList;
     private EditText searchText;
+
+    private FirebaseListAdapter<String> adapter;
 
 
     @Override
@@ -95,6 +100,18 @@ public class TrackedActivity extends AppCompatActivity {
 
 
         updateUI();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
     private class SearchAdapter extends BaseAdapter {
@@ -244,7 +261,16 @@ public class TrackedActivity extends AppCompatActivity {
                 .child("UsersLibrary")
                 .child(user.getUid());
 
-        FirebaseListAdapter<String> lightAdapter = new FirebaseListAdapter<String>(this, String.class, R.layout.list_questions, myRef.child("Tracked")) {
+        Query query = myRef.child("Tracked");
+
+        FirebaseListOptions options = new FirebaseListOptions.Builder<String>()
+                .setQuery(query,String.class)
+                .setLayout(R.layout.list_questions)
+                .build();
+
+
+
+        adapter = new FirebaseListAdapter<String>(options) {
             @Override
             protected void populateView(final View v, final String model, int position) {
                 final TextView text, owner;
@@ -292,7 +318,7 @@ public class TrackedActivity extends AppCompatActivity {
             }
         };
 
-        list.setAdapter(lightAdapter);
+        list.setAdapter(adapter);
     }
 
 }
