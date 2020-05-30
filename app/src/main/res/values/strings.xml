@@ -20,14 +20,7 @@
     <string name="rate_message_text">Do you really want to mark this message as a response?</string>
 
     <string name="TextPreview">
-        <b>Welcome to Forum Chat!</b>\n
-        Here you can quickly get an answer to any of your questions, if, of course, there is an answer to it, and our users know it.\n
-        First, I recommend that you put your own avatar and assign a nickname at <b>Settings</b>, so that people know who is responsible, and what would be beautiful.\n
-        To ask a question, go to the <b>Forums</b> tab and click <b>Add</b> question.\n
-        If you want to view the questions and find the ones that have already been answered, or answer the question yourself, you can still use the <b>Search</b> in the same tab.\n
-        If you want to add a question to the tracked ones, you just need to click on the <b>Star</b> directly in the question itself to know when it will be answered.\n
-        In order to view the questions that you <b>Created</b> or those that you marked as <b>Tracked</b>, go to the Library tab. there are not only the above criteria, but also the <b>History</b> of viewed questions, in case you forgot where you viewed them.\n
-        <b>Enjoy your use!</b>
+        <b> Welcome to the Forum Chat! </b>\nHere you can quickly get an answer to any of your questions if there is one.\n First, you should confirm your mail by clicking on the appropriate button in <b> Settings </b>.\nSecondly, it’s recommended that you set your own avatar there and assign a nickname.\n To ask a question, go to the <b> Forums </b> tab and click the button with the <b> + </b> sign.\nIf you want to look at a question or find the right one, go to the <b> Forums </b> tab, the search bar is also located here.\n If you want to add a question to the tracked ones, you just need to click on the <b> Asterisk </b> right in the question itself, to find out when the answer will be given.\n To view the questions that you created or those that you marked as <b> Tracked </b>, go to the <b> Library </b>. There is also <b> View History </b>.\nNice Use!
     </string>
 
     <string name="change_message">Change message</string>

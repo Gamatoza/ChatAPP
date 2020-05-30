@@ -301,6 +301,7 @@ public class TrackedActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         Intent intent = new Intent(TrackedActivity.this, ViewQuestionActivity.class);
                                         intent.putExtra("forumRef", qi.getQuestionID());
+                                        intent.putExtra("is_tracked",true);
                                         startActivity(intent);
                                     }
                                 });

@@ -117,6 +117,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         FORUM_ID = intent.getStringExtra("forumRef"); //Передаем ID форума
+        isTracked = intent.getBooleanExtra("is_tracked",false);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
@@ -141,9 +142,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
         final TextView textViewTitle, textViewDescription;
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewDescription = findViewById(R.id.textViewDescription);
-        //endregion
-
-        //region Получение текущего вопроса
         mainListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -178,6 +176,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 Log.w(LOG_TAG, "Failed to read value.");
             }
         };
+
         mainRef.child("Forums").child(FORUM_ID).addValueEventListener(mainListener);
 
         //endregion
@@ -217,24 +216,26 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         final ImageView imageViewTracked = findViewById(R.id.imageViewTracked);
 
-        trackRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot datas : dataSnapshot.getChildren()) {
-                    if (datas.getValue(String.class).equals(currentQuestion.getId())) {
-                        isTracked = true;
-                        trackedInLibraryID = datas.getKey();
-                        imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
-                        return;
+        if(isTracked) imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
+        else
+            trackRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                        if (datas.getValue(String.class).equals(currentQuestion.getId())) {
+                            isTracked = true;
+                            trackedInLibraryID = datas.getKey();
+                            imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
+                            return;
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
 
         findViewById(R.id.imageViewTracked).setOnClickListener(new View.OnClickListener() {
@@ -255,14 +256,20 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
         //endregion
 
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+        if(mainListener!=null)
+        mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
     }
 
     //обработчик данных для получения сообщений
