@@ -104,8 +104,8 @@ public class NavigationActivity extends AppCompatActivity
         FragmentTransaction ftrans = getFragmentManager().beginTransaction();
         ftrans.replace(R.id.container, forms);
 
-        pushService = new Intent(this,PushService.class);
-        startService(pushService);
+        /*pushService = new Intent(this,PushService.class);
+        startService(pushService);*/
     }
 
     @Override
@@ -204,13 +204,16 @@ public class NavigationActivity extends AppCompatActivity
             }*/
         }
 
+        pushService = new Intent(this,PushService.class);
+        startService(pushService);
+
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //stopService(pushService);
+        stopService(pushService);
 
     }
 }
