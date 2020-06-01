@@ -3,7 +3,10 @@ package com.example.chatapp.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -34,33 +37,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.editTextLogPassword);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+        if(hasConnection(getApplicationContext())) {
 
-        findViewById(R.id.buttonLogin).setOnClickListener(this);
-        findViewById(R.id.textViewSignUp).setOnClickListener(this);
+            findViewById(R.id.buttonLogin).setOnClickListener(this);
+            findViewById(R.id.textViewSignUp).setOnClickListener(this);
 
-        mAuth = FirebaseAuth.getInstance();
+            mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.textViewResetPassword).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editTextEmail.getText().toString().isEmpty()) {
-                    editTextEmail.setError("Enter the email address to send the password reset message");
-                    editTextEmail.requestFocus();
-                    return;
-                }else {
-                    FirebaseAuth.getInstance().sendPasswordResetEmail(editTextEmail.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getApplicationContext(),"Reset message sended, check out your email",Toast.LENGTH_SHORT).show();
+            findViewById(R.id.textViewResetPassword).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (editTextEmail.getText().toString().isEmpty()) {
+                        editTextEmail.setError("Enter the email address to send the password reset message");
+                        editTextEmail.requestFocus();
+                        return;
+                    } else {
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(editTextEmail.getText().toString())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "Reset message sended, check out your email", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                    }
                 }
-            }
-        });
+            });
+        } else{
 
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(),"No Internet connection",Toast.LENGTH_SHORT).show();
+
+                }
+            };
+            findViewById(R.id.buttonLogin).setOnClickListener(listener);
+            findViewById(R.id.textViewSignUp).setOnClickListener(listener);
+            findViewById(R.id.textViewResetPassword).setOnClickListener(listener);
+        }
     }
 
     private void userLogin() {
@@ -129,6 +145,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 userLogin();
                 break;
         }
+    }
+
+    public static boolean hasConnection(Context context)
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+        {
+            return true;
+        }
+        return false;
     }
 
 

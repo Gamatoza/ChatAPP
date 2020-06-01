@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.example.chatapp.R;
 import com.example.chatapp.dialogs.MessageOptionsDialog;
 import com.example.chatapp.dialogs.RateDialog;
+import com.example.chatapp.services.PushService;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -250,6 +251,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     trackedInLibraryID = trackRef.push().getKey();
                     trackRef.child(trackedInLibraryID).setValue(currentQuestion.getId());
                 }
+                startService(new Intent(getApplicationContext(),PushService.class));
             }
         });
 
@@ -260,7 +262,14 @@ public class ViewQuestionActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        startService(new Intent(getApplicationContext(),PushService.class));
+        displayAllMessages();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        displayAllMessages();
     }
 
     @Override

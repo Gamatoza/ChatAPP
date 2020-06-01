@@ -1,7 +1,10 @@
 package com.example.chatapp;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.chatapp.activities.LoginActivity;
 import com.example.chatapp.activities.userlibrary.CreatedActivity;
 import com.example.chatapp.dialogs.AboutProgram;
 import com.example.chatapp.fragments.FragmentForums;
@@ -103,6 +107,12 @@ public class NavigationActivity extends AppCompatActivity
 
         FragmentTransaction ftrans = getFragmentManager().beginTransaction();
         ftrans.replace(R.id.container, forms);
+
+        if(!hasConnection(getApplicationContext())){
+            Toast.makeText(getApplicationContext(),"No Internet connection",Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
 
         /*pushService = new Intent(this,PushService.class);
         startService(pushService);*/
@@ -215,5 +225,17 @@ public class NavigationActivity extends AppCompatActivity
         super.onDestroy();
         stopService(pushService);
 
+    }
+
+    public static boolean hasConnection(Context context)
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+        {
+            return true;
+        }
+        return false;
     }
 }

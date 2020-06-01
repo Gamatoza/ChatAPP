@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import java.util.Map;
 
 public class PushService extends Service {
 
-    Map<String,Boolean> currentTracked;
+    Map<String,Question> currentTracked;
 
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -51,8 +52,7 @@ public class PushService extends Service {
     }
 
     public PushService() {
-        currentTracked = new HashMap<>();
-    }
+        currentTracked = new HashMap<>();}
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -63,11 +63,16 @@ public class PushService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        updateLocalTracked();
+    }
+
+    void updateLocalTracked(){
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase.getInstance().getReference()
                 .child("UsersLibrary")
                 .child(user.getUid())
-                .child("Tracked").addListenerForSingleValueEvent(new ValueEventListener() {
+                .child("Tracked").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot datas : dataSnapshot.getChildren()) {
@@ -79,7 +84,7 @@ public class PushService extends Service {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         Question qo = dataSnapshot.getValue(Question.class);
-                                        currentTracked.put(qo.getId(),qo.isDecided());
+                                        currentTracked.put(qo.getId(), qo);
                                     }
                                 }
 
@@ -96,13 +101,18 @@ public class PushService extends Service {
 
             }
         });
+    }
 
-
+    private static boolean compareMaps(Map<String, Question> map1,
+                                       Map<String, Question> map2) {
+        return map1.entrySet().containsAll(map2.entrySet())
+                && map2.entrySet().containsAll(map1.entrySet());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        for ( final Map.Entry<String, Boolean> item: currentTracked.entrySet()) {
+        updateLocalTracked();
+        for ( final Map.Entry<String, Question> item: currentTracked.entrySet()) {
             FirebaseDatabase.getInstance().getReference()
                     .child("Forums")
                     .child(item.getKey())
@@ -111,13 +121,20 @@ public class PushService extends Service {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 Question qo = dataSnapshot.getValue(Question.class);
-                                if(qo.isDecided() && !item.getValue()) {
-                                    showNotification("Tracked question got answer!","SOME TEXT",qo.getId());
-                                    item.setValue(true);
-                                }else if(!qo.isDecided() && item.getValue()){
-                                    showNotification("Tracked question changed!","SOME TEXT",qo.getId());
-                                    item.setValue(false);
+                                if(qo.isDecided() && !item.getValue().isDecided()) {
+                                    showNotification("Tracked question got answer!","Click to open",qo.getId());
+                                    item.setValue(qo);
                                 }
+                                else if(qo.isDecided() &&  item.getValue().isDecided() &&
+                                        item.getValue().getAnswer() != qo.getAnswer()){
+                                    showNotification("Tracked question was changed!","Click to open",qo.getId());
+                                    item.setValue(qo);
+                                }
+                                else if(!qo.isDecided() && item.getValue().isDecided()){
+                                    showNotification("Tracked question was deleted!","Click to open",qo.getId());
+                                    item.setValue(qo);
+                                }
+
                             }
                         }
 
@@ -127,9 +144,10 @@ public class PushService extends Service {
                         }
                     });
         }
-        return Service.START_REDELIVER_INTENT;
-
+        return Service.START_NOT_STICKY;
     }
+
+
 
     private RemoteViews getCustomDesign(String title, String message){
         RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_firebase);

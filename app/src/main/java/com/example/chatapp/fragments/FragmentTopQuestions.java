@@ -32,8 +32,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -179,6 +181,8 @@ public class FragmentTopQuestions extends Fragment {
 
         listView.setLayoutManager(mLayoutManager);*/
         adapter.notifyDataSetChanged();
+
+
         listOfMessages.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         listOfMessages.scrollTo(0,listOfMessages.getHeight());
