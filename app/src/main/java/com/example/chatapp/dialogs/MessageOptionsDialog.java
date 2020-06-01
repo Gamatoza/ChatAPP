@@ -48,34 +48,34 @@ public class MessageOptionsDialog extends DialogFragment implements OnClickListe
         MESSAGE_KEY = getArguments().getString("message_key");
         Boolean isAuthor = getArguments().getBoolean("is_author");
 
+        final Button btn = v.findViewById(R.id.btnSetAnswer);
+
         if(isAuthor){
-            final Button btn = v.findViewById(R.id.btnSetAnswer);
             btn.setVisibility(View.VISIBLE);
             btn.setOnClickListener(this);
-            Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
-            Qref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
-
-                        current = (Question) dataSnapshot.getValue(Question.class);
-                        btn.setText(R.string.setAnswer);
-                        if (current.isDecided())
-                            if (current.getAnswer().contains(MESSAGE_KEY)) {
-                                btn.setText(R.string.removeAnswer);
-                                isThatMessage = true;
-                            }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
         }
 
+        Qref = FirebaseDatabase.getInstance().getReference().child("Forums").child(FORUM_KEY);
+        Qref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+
+                    current = (Question) dataSnapshot.getValue(Question.class);
+                    btn.setText(R.string.setAnswer);
+                    if (current.isDecided())
+                        if (current.getAnswer().contains(MESSAGE_KEY)) {
+                            btn.setText(R.string.removeAnswer);
+                            isThatMessage = true;
+                        }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         return v;
     }
 

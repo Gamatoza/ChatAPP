@@ -1,53 +1,152 @@
 package com.example.chatapp.services;
 
-
-import android.app.Notification;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.example.chatapp.R;
-import com.example.chatapp.activities.userlibrary.CreatedActivity;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
+import com.example.chatapp.activities.ViewQuestionActivity;
+import com.example.chatapp.activities.userlibrary.TrackedActivity;
+import com.example.chatapp.source.Question;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class PushService extends FirebaseMessagingService {
-    @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
-        if(remoteMessage.getData().size()>0){
-            showNotification(remoteMessage.getData().get("title"),remoteMessage.getData().get("message"));
-        }
+public class PushService extends Service {
 
-        if(remoteMessage.getNotification()!=null){
-            showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+    Map<String,Boolean> currentTracked;
+
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        PushService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return PushService.this;
         }
     }
 
-    private RemoteViews getCustomDesign(String title,String message){
-        RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification);
+    public PushService() {
+        currentTracked = new HashMap<>();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        return mBinder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance().getReference()
+                .child("UsersLibrary")
+                .child(user.getUid())
+                .child("Tracked").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                    FirebaseDatabase.getInstance().getReference()
+                            .child("Forums")
+                            .child(datas.getValue(String.class))
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        Question qo = dataSnapshot.getValue(Question.class);
+                                        currentTracked.put(qo.getId(),qo.isDecided());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.w("TAG", "Failed to read value.");
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        for ( final Map.Entry<String, Boolean> item: currentTracked.entrySet()) {
+            FirebaseDatabase.getInstance().getReference()
+                    .child("Forums")
+                    .child(item.getKey())
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Question qo = dataSnapshot.getValue(Question.class);
+                                if(qo.isDecided() && !item.getValue()) {
+                                    showNotification("Tracked question got answer!","SOME TEXT",qo.getId());
+                                    item.setValue(true);
+                                }else if(!qo.isDecided() && item.getValue()){
+                                    showNotification("Tracked question changed!","SOME TEXT",qo.getId());
+                                    item.setValue(false);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.w("TAG", "Failed to read value.");
+                        }
+                    });
+        }
+        return Service.START_REDELIVER_INTENT;
+
+    }
+
+    private RemoteViews getCustomDesign(String title, String message){
+        RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.notification_firebase);
         remoteViews.setTextViewText(R.id.title,title);
         remoteViews.setTextViewText(R.id.message,message);
         remoteViews.setImageViewResource(R.id.icon,R.drawable.ic_notifications_active);
         return remoteViews;
     }
 
-    public void showNotification(String title, String message){
+    public void showNotification(String title, String message,String id){
         //переход на активити когда нажал на пуш
-        Intent intent = new Intent(this, CreatedActivity.class);
-        String channel_id="forum_chat_channel";
+        Intent intent = new Intent(this, ViewQuestionActivity.class);
+        intent.putExtra("forumRef",id);
+        intent.putExtra("is_tracked",id);
+        String channel_id="tracked_notify_channel";
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),channel_id)
                 .setSmallIcon(R.drawable.ic_notifications_active)
@@ -69,7 +168,7 @@ public class PushService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(channel_id,"forum_chat",NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel notificationChannel = new NotificationChannel(channel_id,"tracked_notify",NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setSound(uri,null);
             notificationManager.createNotificationChannel(notificationChannel);
         }

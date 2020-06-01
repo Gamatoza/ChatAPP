@@ -9,9 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service
             android:name=".services.PushService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".services.MyFirebaseMessageService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -27,8 +30,9 @@
         <activity
             android:name=".activities.userlibrary.TrackedActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.userlibrary.CreatedActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activities.userlibrary.CreatedActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ChangeMessageActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -46,4 +50,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

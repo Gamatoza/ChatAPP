@@ -23,6 +23,7 @@ import com.example.chatapp.fragments.FragmentForums;
 import com.example.chatapp.fragments.FragmentLittleHelp;
 import com.example.chatapp.fragments.FragmentSettings;
 import com.example.chatapp.fragments.FragmentTopQuestions;
+import com.example.chatapp.services.PushService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
@@ -47,6 +48,8 @@ public class NavigationActivity extends AppCompatActivity
 
 
     AboutProgram dlgAP = new AboutProgram();
+
+    Intent pushService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,9 @@ public class NavigationActivity extends AppCompatActivity
 
         FragmentTransaction ftrans = getFragmentManager().beginTransaction();
         ftrans.replace(R.id.container, forms);
+
+        pushService = new Intent(this,PushService.class);
+        startService(pushService);
     }
 
     @Override
@@ -200,4 +206,11 @@ public class NavigationActivity extends AppCompatActivity
 
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //stopService(pushService);
+
+    }
 }

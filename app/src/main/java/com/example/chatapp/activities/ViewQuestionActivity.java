@@ -167,7 +167,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 } else {
                     finish();
                     Toast.makeText(getApplicationContext(), "It looks like the question was just deleted", Toast.LENGTH_SHORT).show();
-
                 }
             }
 
