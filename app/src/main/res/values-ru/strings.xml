@@ -75,7 +75,21 @@
     <string name="message_aboutProgram">
         Версия программы 1.0\nПрограмма не подлежит коммерческой компании и распространяется в сугубо ознакомительных целях\nАвтор программы не несет ответственности за возможные поломки внутри программы, однако регулярно ее обновляет по просьбам тестировщиков\nАвторы:\nПрограммист: Власов Т.С.\nДизайнер: Власов Т.С.\nТестировщики:\nАндрей Магуцкий\nАртур Ланге\nВиктор Матвеев\nМакс Ниров\nИгорь Ульянов\nЯ\nСпасибо что пользуетесь этим продуктом!
     </string>
-    <string name="understand">Понял</string>
+    <string name="understand">Понятно</string>
+    <string name="track_question_got">Вопрос из избранного получил ответ!</string>
+    <string name="track_question_change">Вопрос из избранного изменил ответ!</string>
+    <string name="track_question_delete">Вопрос из избранного удалил ответ!</string>
+    <string name="click_to_open">Нажмите что бы посмотреть</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
+    <string name="resend_email">Сообщение с инструкциями отправлено на вашу почту</string>
+    <string name="enter_email_to_reset">Что бы изменить пароль для начала введите адрес</string>
+    <string name="email_required">Почта не была введена</string>
+    <string name="enter_vaild_email">Введите действительный адрес электронной почты</string>
+    <string name="password_required">Пароль не был введен</string>
+    <string name="minimum_length_of_password">Минимальный пароль составляет 6 символов</string>
+    <string name="profile_uploaded">Профиль обновлен</string>
+    <string name="verification_sent">Инструкции были высланы вам на почту</string>
+    <string name="deleted_question_on_view">Выглядит так, будто этот вопрос был удален</string>
 
 
 </resources>

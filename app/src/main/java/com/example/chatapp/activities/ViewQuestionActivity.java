@@ -66,11 +66,9 @@ HERE EVERYTHING IS KEPT ON THE WILL OF GOD
  */
 public class ViewQuestionActivity extends AppCompatActivity {
 
-    private int SIGN_IN_CODE = 1;                       //Нужен для проверки на авторизацию, позже заменю
     private RelativeLayout activity_question;           //Основной бэкграунд
 
     private FirebaseRecyclerAdapter<Message,MessageViewHolder> adapter; //Адаптер для обновления сообщений
-    //private FirebaseListAdapter<Message> adapter;
 
     private EmojiconEditText emojiconEditText;          //Сообщение, одновременно является обработчиком смайлов
     private ImageView emojiButton, submitButton;        //Два изображения, отправка и вызов смайлов
@@ -97,18 +95,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SIGN_IN_CODE) {
-            if (resultCode == RESULT_OK) {
-                Snackbar.make(activity_question, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
-                displayAllMessages();
-            } else {
-                Snackbar.make(activity_question, "Вы не авторизованы", Snackbar.LENGTH_LONG).show();
-                finish();
-            }
-        }
     }
-
-    Map<String, Question> History;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -167,7 +154,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     displayAllMessages(); //отобразить все сообщения с постоянным обновлениемы
                 } else {
                     finish();
-                    Toast.makeText(getApplicationContext(), "It looks like the question was just deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.deleted_question_on_view, Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -19,9 +19,7 @@
     <string name="delete_message_text">Do you really want to remove this message?</string>
     <string name="rate_message_text">Do you really want to mark this message as a response?</string>
 
-    <string name="TextPreview">
-        <b> Welcome to the Forum Chat! </b>\nHere you can quickly get an answer to any of your questions if there is one.\n First, you should confirm your mail by clicking on the appropriate button in <b> Settings </b>.\nSecondly, it’s recommended that you set your own avatar there and assign a nickname.\n To ask a question, go to the <b> Forums </b> tab and click the button with the <b> + </b> sign.\nIf you want to look at a question or find the right one, go to the <b> Forums </b> tab, the search bar is also located here.\n If you want to add a question to the tracked ones, you just need to click on the <b> Asterisk </b> right in the question itself, to find out when the answer will be given.\n To view the questions that you created or those that you marked as <b> Tracked </b>, go to the <b> Library </b>. There is also <b> View History </b>.\nNice Use!
-    </string>
+    <string name="TextPreview">Welcome to the <b>Forum Chat!</b>\nHere you can quickly get an answer to any of your questions, if any.\nFirstly, you should confirm your mail by clicking on the appropriate button in the <b>Settings</b>.\nSecondly, it’s also recommended that you set your own avatar there and assign a nickname.\nTo ask a question, go to the <b>Forums</b> tab and click the button with a <b>+</b> sign.\nIf you want to look at question or find the one, go to the <b>Forums</b> tab, the search bar is also located here.\nIf you want to add a question to the tracked ones, you just need to click on the <b>Star</b> icon right in the question itself to find out when it will be answered.\nTo view the questions that you created or those that you marked as <b>Tracked</b>, go to the <b>Library</b> tab. Also here located <b>History of views.</b>\nHave a nice use!</string>
 
     <string name="change_message">Change message</string>
     <string name="delete_message">Delete message</string>
@@ -76,6 +74,20 @@
         Program version 1.0\nThe program is not subject to a commercial company and is distributed for informational purposes only\nThe author of the program is not responsible for possible breakdowns inside the program, but regularly updates it at the request of testers\nAuthors:\nProgrammer: Vlasov T. S.\nDesigner: T. S. Vlasov\nTesters:\nAndrey Migutsky\nArthur Lange\nVictor Matveev\nMax Nirov\nIgor Ulyanov\nI\nThank you for using this product!
     </string>
     <string name="understand">Got it</string>
+    <string name="track_question_got">Tracked question got answer!</string>
+    <string name="track_question_change">Tracked question was changed!</string>
+    <string name="track_question_delete">Tracked question was deleted!</string>
+    <string name="click_to_open">Click to open</string>
+    <string name="no_internet_connection">No Internet connection</string>
+    <string name="resend_email">Reset message sended, check out your email</string>
+    <string name="enter_email_to_reset">Enter the email address to send the password reset message</string>
+    <string name="email_required">Email is required</string>
+    <string name="enter_vaild_email">Please enter a valid email</string>
+    <string name="password_required">Password is required</string>
+    <string name="minimum_length_of_password">Minimum length of password should be 6</string>
+    <string name="profile_uploaded">Profile Uploaded</string>
+    <string name="verification_sent">Verification email sent</string>
+    <string name="deleted_question_on_view">It looks like the question was just deleted</string>
 
 
 </resources>

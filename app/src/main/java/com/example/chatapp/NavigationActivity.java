@@ -109,7 +109,7 @@ public class NavigationActivity extends AppCompatActivity
         ftrans.replace(R.id.container, forms);
 
         if(!hasConnection(getApplicationContext())){
-            Toast.makeText(getApplicationContext(),"No Internet connection",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, LoginActivity.class));
         }

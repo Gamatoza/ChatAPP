@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onClick(View v) {
                     if (editTextEmail.getText().toString().isEmpty()) {
-                        editTextEmail.setError("Enter the email address to send the password reset message");
+                        editTextEmail.setError(getString(R.string.enter_email_to_reset));
                         editTextEmail.requestFocus();
                         return;
                     } else {
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Reset message sended, check out your email", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), R.string.resend_email, Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),"No Internet connection",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
 
                 }
             };
@@ -85,25 +85,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         if (email.isEmpty()) {
-            editTextEmail.setError("Email is required");
+            editTextEmail.setError(getString(R.string.email_required));
             editTextEmail.requestFocus();
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Please enter a valid email");
+            editTextEmail.setError(getString(R.string.enter_vaild_email));
             editTextEmail.requestFocus();
             return;
         }
 
         if (password.isEmpty()) {
-            editTextPassword.setError("Password is required");
+            editTextPassword.setError(getString(R.string.password_required));
             editTextPassword.requestFocus();
             return;
         }
 
         if (password.length() < 6) {
-            editTextPassword.setError("Minimum length of password should be 6");
+            editTextPassword.setError(getString(R.string.minimum_length_of_password));
             editTextPassword.requestFocus();
             return;
         }

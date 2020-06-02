@@ -122,16 +122,16 @@ public class PushService extends Service {
                             if (dataSnapshot.exists()) {
                                 Question qo = dataSnapshot.getValue(Question.class);
                                 if(qo.isDecided() && !item.getValue().isDecided()) {
-                                    showNotification("Tracked question got answer!","Click to open",qo.getId());
+                                    showNotification(getString(R.string.track_question_got),getString(R.string.click_to_open),qo.getId());
                                     item.setValue(qo);
                                 }
                                 else if(qo.isDecided() &&  item.getValue().isDecided() &&
                                         item.getValue().getAnswer() != qo.getAnswer()){
-                                    showNotification("Tracked question was changed!","Click to open",qo.getId());
+                                    showNotification(getString(R.string.track_question_change),getString(R.string.click_to_open),qo.getId());
                                     item.setValue(qo);
                                 }
                                 else if(!qo.isDecided() && item.getValue().isDecided()){
-                                    showNotification("Tracked question was deleted!","Click to open",qo.getId());
+                                    showNotification(getString(R.string.track_question_delete),getString(R.string.click_to_open),qo.getId());
                                     item.setValue(qo);
                                 }
 

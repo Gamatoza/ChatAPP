@@ -137,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(ProfileActivity.this,"Profile Uploaded",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, R.string.profile_uploaded,Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -218,7 +218,7 @@ public class ProfileActivity extends AppCompatActivity {
                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                @Override
                                public void onComplete(@NonNull Task<Void> task) {
-                                   Toast.makeText(ProfileActivity.this,"Verification email sent",Toast.LENGTH_SHORT).show();
+                                   Toast.makeText(ProfileActivity.this, R.string.verification_sent,Toast.LENGTH_SHORT).show();
                                }
                            });
                        }
