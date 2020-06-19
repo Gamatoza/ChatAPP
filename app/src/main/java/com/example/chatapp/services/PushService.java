@@ -37,12 +37,17 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class PushService extends Service {
+public class PushService extends Service implements Runnable{
 
-    Map<String,Question> currentTracked;
+    private static Map<String,Question> currentTracked;
 
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
+
+    @Override
+    public void run() {
+
+    }
 
     public class LocalBinder extends Binder {
         PushService getService() {
@@ -66,7 +71,7 @@ public class PushService extends Service {
         updateLocalTracked();
     }
 
-    void updateLocalTracked(){
+    public static void updateLocalTracked(){
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase.getInstance().getReference()

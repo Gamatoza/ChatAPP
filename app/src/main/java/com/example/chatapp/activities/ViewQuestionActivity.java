@@ -176,7 +176,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
         emojIconActions = new EmojIconActions(getApplicationContext(), activity_question, emojiconEditText, emojiButton);
         emojIconActions.ShowEmojIcon();
 
-        //посылает данные на сервер
+        //обработчик для посыла сообщения
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +213,7 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             isTracked = true;
                             trackedInLibraryID = datas.getKey();
                             imageViewTracked.setImageResource(R.drawable.ic_star_on_black);
+                            PushService.updateLocalTracked();
                             return;
                         }
                     }
