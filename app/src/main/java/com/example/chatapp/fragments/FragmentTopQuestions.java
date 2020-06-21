@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,12 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapp.R;
-import com.example.chatapp.activities.CreateQuestionActivity;
 import com.example.chatapp.activities.ViewQuestionActivity;
+import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
-import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseListOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,11 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,9 +47,9 @@ public class FragmentTopQuestions extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private DatabaseReference myRef;
-    private FirebaseListAdapter<Question> adapter;
+    private FirebaseRecyclerAdapter adapter;
 
-    private ListView listView;
+    private RecyclerView recyclerView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -106,40 +98,46 @@ public class FragmentTopQuestions extends Fragment {
 
 
         mAuth = FirebaseAuth.getInstance();
-        listView = (ListView)root.findViewById(R.id.list_of_questions);
         myRef = FirebaseDatabase.getInstance().getReference();
         user = mAuth.getCurrentUser();
 
-
-
-        ListView listOfMessages = (ListView)root.findViewById(R.id.list_of_questions);
+        RecyclerView listOfMessages = (RecyclerView) root.findViewById(R.id.list_of_questions);
+        listOfMessages.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        listOfMessages.setHasFixedSize(false);
 
         Query query= myRef.child("Forums").limitToLast(20);
 
-        FirebaseListOptions options = new FirebaseListOptions.Builder<Question>()
+        /*FirebaseListOptions options = new FirebaseListOptions.Builder<Question>()
                 .setQuery(query,Question.class)
                 .setLayout(R.layout.list_questions)
+                .build();*/
+
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Question>()
+                .setQuery(query,Question.class)
                 .build();
 
-        adapter = new FirebaseListAdapter<Question>(options) {
+        adapter = new FirebaseRecyclerAdapter<Question, TopQuestionsViewHolder>(options){
+
+            @NonNull
             @Override
-            protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
-                TextView text,owner;
-                text  = (TextView)v.findViewById(R.id.forum_question);
-                owner = (TextView)v.findViewById(R.id.textViewOwnerID);
-                final ImageView imageView = (ImageView)v.findViewById(R.id.imageViewIsTracked);
-                imageView.setVisibility(View.VISIBLE);
+            public TopQuestionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_questions, parent, false);
+                return new TopQuestionsViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final TopQuestionsViewHolder holder, int position, @NonNull final Question model) {
+                holder.imageView.setVisibility(View.VISIBLE);
                 String title="";
                 if(model.getTitle().length() >= 16){
                     title = model.getTitle().substring(0,15) + "...";
                 }else title = model.getTitle();
-                text.setText(title);
+                holder.text.setText(title);
                 String Author = "Author: ";
                 if(mAuth.getUid().equals(model.getUserID())) Author += "You";
                 else Author+=model.generateInfo().getUserName();
-                owner.setText(Author);
-                RelativeLayout forum = (RelativeLayout)v.findViewById(R.id.dsForum);
-                forum.setOnClickListener(new View.OnClickListener() {
+                holder.id.setText(Author);
+                holder.relative.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), ViewQuestionActivity.class);
@@ -157,9 +155,9 @@ public class FragmentTopQuestions extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot datas : dataSnapshot.getChildren()) {
                                     if (datas.getValue(String.class).equals(model.getId())) {
-                                        imageView.setImageResource(R.drawable.ic_star_on_black);
+                                        holder.imageView.setImageResource(R.drawable.ic_star_on_black);
                                         return;
-                                    }else imageView.setImageResource(R.drawable.ic_star_off_black);
+                                    }else holder.imageView.setImageResource(R.drawable.ic_star_off_black);
                                 }
                             }
 
@@ -169,8 +167,8 @@ public class FragmentTopQuestions extends Fragment {
                             }
                         });
 
-                if(model.isDecided()) forum.setBackgroundResource(R.color.colorHaveAnswer);
-                else forum.setBackgroundResource(android.R.color.background_light);
+                if(model.isDecided()) holder.relative.setBackgroundResource(R.color.colorHaveAnswer);
+                else holder.relative.setBackgroundResource(android.R.color.background_light);
             }
         };
 
@@ -191,34 +189,16 @@ public class FragmentTopQuestions extends Fragment {
     }
 
     private static class TopQuestionsViewHolder extends RecyclerView.ViewHolder{
-        final RelativeLayout relativeLayout;
-        final ImageView avatar, star;
-        TextView mess_user, mess_time;
-        final TextView mess_text;
+        final RelativeLayout relative;
+        final TextView text,id;
+        final ImageView imageView;
 
         public TopQuestionsViewHolder(@NonNull View v) {
             super(v);
-            relativeLayout = v.findViewById(R.id.dsMessage);
-            avatar = v.findViewById(R.id.imageViewAvatar);
-            star = v.findViewById(R.id.imageViewStar);
-            mess_user = v.findViewById(R.id.message_user);
-            mess_time = v.findViewById(R.id.message_time);
-            mess_text = v.findViewById(R.id.message_text);
-
-            /*FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics")
-                    .child(FirebaseAuth.getInstance().getUid() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.get()
-                            .load(uri)
-                            .into(avatar);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    avatar.setImageResource(R.drawable.no_image);
-                }
-            });*/
+            relative = v.findViewById(R.id.dsForum);
+            text = v.findViewById(R.id.forum_question);
+            id = v.findViewById(R.id.textViewOwnerID);
+            imageView = v.findViewById(R.id.imageViewIsTracked);
 
         }
     }

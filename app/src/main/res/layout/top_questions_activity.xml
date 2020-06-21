@@ -7,18 +7,24 @@
     android:orientation="vertical"
     tools:context=".fragments.FragmentTopQuestions">
 
+    <!--TODO добавить топ вопросов-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/latest_questions"
-        android:textSize="35dp"/>
+        android:textSize="25dp"/>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_questions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transcriptMode="alwaysScroll"
+        android:layout_alignParentStart="true"
+        android:background="#FFFFFF"
+        android:divider="@color/colorPrimary"
+        android:dividerHeight="12dp"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
         android:stackFromBottom="true"
-         />
+        android:transcriptMode="alwaysScroll"/>
 
 </LinearLayout>
