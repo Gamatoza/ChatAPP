@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.Date;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
@@ -268,6 +269,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
         mainRef.child("Forums").child(FORUM_ID).removeEventListener(mainListener);
     }
 
+    Boolean isMessageOwner = false;
+
     //обработчик данных для получения сообщений
     //кроме того ставит на них нажатие, при котором автор может назначить это сообщение ответом
     private void displayAllMessages() {
@@ -281,14 +284,20 @@ public class ViewQuestionActivity extends AppCompatActivity {
             @NonNull
             @Override
             public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_mes, parent, false);
+
+                View view;
+                if(isMessageOwner){
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.right_mes, parent, false);
+                }else{
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_mes,parent,false);
+                }
                 return new MessageViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull final MessageViewHolder mvh, int position, @NonNull final Message model) {
-
                 mvh.relativeLayout.setOnClickListener(null);
+                //получение аватарки для пользователя
                 storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -303,6 +312,11 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     }
                 });
 
+                //Добавляет звезду если сообщение отправлено автором
+                if(model.getUserID().equals(currentQuestion.getUserID()))
+                    mvh.star.setVisibility(View.VISIBLE);
+                else mvh.star.setVisibility(View.GONE);
+
                 //Если это сообщение является ответом, оно помечается
                 if (currentQuestion.isDecided()) {
                     if (model.getId().equals(currentQuestion.getAnswer())) {
@@ -312,22 +326,29 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     }
                 }
 
+                //Ставит подпись того, кто сообщение отправил
                 if (model.getUserID().equals(user.getUid())) mvh.mess_user.setText("You");
                 else if (model.getUserDisplayName() != null)
                     mvh.mess_user.setText(model.getUserDisplayName());
                 else mvh.mess_user.setText(model.getUserEmail());
 
+                //Текст сообщения
                 mvh.mess_text.setText(model.getText());
 
+                //TODO дописать более подробную ветвь для времени отправки сообщения
+                //Время отправки сообщения
                 @SuppressLint("SimpleDateFormat")
-                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                SimpleDateFormat format;
+                if(new Date().getYear() == model.getMessageTime().getYear()){
+                    format = new SimpleDateFormat("HH:mm:ss");
+                }else format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 mvh.mess_time.setText(format.format(model.getMessageTime()));
 
                 final String id = model.getId();
                 //Если пользователь является тем, кто написал это сообщение, то может его удалить или изменить
                 if (model.getUserID().equals(user.getUid())) {
+                    isMessageOwner = true;
                     //придумать как закинуть облачко на правую сторону
-
                     mvh.relativeLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -341,9 +362,8 @@ public class ViewQuestionActivity extends AppCompatActivity {
                             dlg.show(getFragmentManager(), "dlg");
                         }
                     });
-
                 } else {
-
+                    isMessageOwner = false;
                     if (isAuthor) {
                         mvh.relativeLayout.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -375,15 +395,15 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
     private static class MessageViewHolder extends RecyclerView.ViewHolder{
         final RelativeLayout relativeLayout;
-        final ImageView avatar;
+        final ImageView avatar, star;
         TextView mess_user, mess_time;
         final TextView mess_text;
-
 
         public MessageViewHolder(@NonNull View v) {
             super(v);
             relativeLayout = v.findViewById(R.id.dsMessage);
             avatar = v.findViewById(R.id.imageViewAvatar);
+            star = v.findViewById(R.id.imageViewStar);
             mess_user = v.findViewById(R.id.message_user);
             mess_time = v.findViewById(R.id.message_time);
             mess_text = v.findViewById(R.id.message_text);
@@ -402,9 +422,6 @@ public class ViewQuestionActivity extends AppCompatActivity {
                     avatar.setImageResource(R.drawable.no_image);
                 }
             });*/
-
         }
     }
-
-
 }

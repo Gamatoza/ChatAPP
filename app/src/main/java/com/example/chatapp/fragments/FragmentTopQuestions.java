@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.CreateQuestionActivity;
@@ -120,7 +121,6 @@ public class FragmentTopQuestions extends Fragment {
                 .setLayout(R.layout.list_questions)
                 .build();
 
-
         adapter = new FirebaseListAdapter<Question>(options) {
             @Override
             protected void populateView(@NonNull View v, @NonNull final Question model, int position) {
@@ -189,6 +189,40 @@ public class FragmentTopQuestions extends Fragment {
         // Inflate the layout for this fragment
         return root;
     }
+
+    private static class TopQuestionsViewHolder extends RecyclerView.ViewHolder{
+        final RelativeLayout relativeLayout;
+        final ImageView avatar, star;
+        TextView mess_user, mess_time;
+        final TextView mess_text;
+
+        public TopQuestionsViewHolder(@NonNull View v) {
+            super(v);
+            relativeLayout = v.findViewById(R.id.dsMessage);
+            avatar = v.findViewById(R.id.imageViewAvatar);
+            star = v.findViewById(R.id.imageViewStar);
+            mess_user = v.findViewById(R.id.message_user);
+            mess_time = v.findViewById(R.id.message_time);
+            mess_text = v.findViewById(R.id.message_text);
+
+            /*FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics")
+                    .child(FirebaseAuth.getInstance().getUid() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get()
+                            .load(uri)
+                            .into(avatar);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    avatar.setImageResource(R.drawable.no_image);
+                }
+            });*/
+
+        }
+    }
+
 
     @Override
     public void onStart() {
