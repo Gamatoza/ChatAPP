@@ -180,7 +180,7 @@ public class FragmentTopQuestions extends Fragment {
         listView.setLayoutManager(mLayoutManager);*/
         adapter.notifyDataSetChanged();
 
-
+        adapter.startListening();
         listOfMessages.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         listOfMessages.scrollTo(0,listOfMessages.getHeight());

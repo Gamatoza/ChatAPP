@@ -91,6 +91,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private StorageReference storageRef;
 
+    private static final int MSG_TYPE_LEFT = 0;
+    private static final int MSG_TYPE_RIGHT = 1;
+
     private static String LOG_TAG;
 
     @Override
@@ -281,12 +284,22 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 .build();
 
         adapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(options) {
+
+            @Override
+            public int getItemViewType(int position) {
+                if (getItem(position).getUserID().equals(user.getUid())) {
+                    return MSG_TYPE_RIGHT;
+                } else {
+                    return MSG_TYPE_LEFT;
+                }
+            }
+
             @NonNull
             @Override
             public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
                 View view;
-                if(isMessageOwner){
+                if(viewType == MSG_TYPE_RIGHT){
                     view = LayoutInflater.from(parent.getContext()).inflate(R.layout.right_mes, parent, false);
                 }else{
                     view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_mes,parent,false);
@@ -296,7 +309,9 @@ public class ViewQuestionActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull final MessageViewHolder mvh, int position, @NonNull final Message model) {
+
                 mvh.relativeLayout.setOnClickListener(null);
+
                 //получение аватарки для пользователя
                 storageRef.child(model.getUserID() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
