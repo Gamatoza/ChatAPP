@@ -79,7 +79,7 @@
     <string name="track_question_delete">Tracked question was deleted!</string>
     <string name="click_to_open">Click to open</string>
     <string name="no_internet_connection">No Internet connection</string>
-    <string name="resend_email">Reset message sended, check out your email</string>
+    <string name="resend_email">Reset message sanded, check out your email</string>
     <string name="enter_email_to_reset">Enter the email address to send the password reset message</string>
     <string name="email_required">Email is required</string>
     <string name="enter_vaild_email">Please enter a valid email</string>
@@ -88,6 +88,12 @@
     <string name="profile_uploaded">Profile Uploaded</string>
     <string name="verification_sent">Verification email sent</string>
     <string name="deleted_question_on_view">It looks like the question was just deleted</string>
+    <string name="verification_check">You can not create messages without verification</string>
+    <string name="not_authorized">User not authorized</string>
+    <string name="email_verified">Email Verified</string>
+    <string name="delete_account">Delete account</string>
+    <string name="sure_delete_account">Are you sure want delete account?</string>
+    <string name="alert">Alert!</string>
 
 
 </resources>

@@ -90,6 +90,12 @@
     <string name="profile_uploaded">Профиль обновлен</string>
     <string name="verification_sent">Инструкции были высланы вам на почту</string>
     <string name="deleted_question_on_view">Выглядит так, будто этот вопрос был удален</string>
+    <string name="verification_check">Вы не можете создавать сообщения без верификации</string>
+    <string name="not_authorized">Пользователь не аутенцифицирован</string>
+    <string name="email_verified">Почта подтверждена</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="sure_delete_account">Вы действительно хотите удалить аккаунт?</string>
+    <string name="alert">Внимание!</string>
 
 
 </resources>

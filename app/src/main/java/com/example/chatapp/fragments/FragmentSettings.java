@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 
 import com.example.chatapp.R;
 import com.example.chatapp.activities.LoginActivity;
+import com.example.chatapp.dialogs.DeleteAccountDialog;
+import com.example.chatapp.templates.DialogGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -138,7 +140,10 @@ public class FragmentSettings extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                showImageChooser();
+                if(user.isEmailVerified())
+                    showImageChooser();
+                else Toast.makeText(getActivity().getApplicationContext(), R.string.verification_check,Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -149,7 +154,9 @@ public class FragmentSettings extends Fragment {
         root.findViewById(R.id.buttonSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserInformation();
+                if(user.isEmailVerified())
+                    saveUserInformation();
+                else Toast.makeText(getActivity().getApplicationContext(), R.string.verification_check,Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -162,6 +169,13 @@ public class FragmentSettings extends Fragment {
             }
         });
 
+        root.findViewById(R.id.buttonDeleteAccount).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteAccountDialog dlg = new DeleteAccountDialog();
+                dlg.show(getFragmentManager(),"DeleteAccountDLG");
+            }
+        });
         // Inflate the layout for this fragment
         return root;
     }
@@ -292,10 +306,10 @@ public class FragmentSettings extends Fragment {
             }
 
             if(user.isEmailVerified()){
-                textView.setText("Email Verified");
+                textView.setText(R.string.email_verified);
             } else {
 
-                textView.setText("Email Not Verified (Click to Verify)");
+                textView.setText(R.string.email_not_verified);
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

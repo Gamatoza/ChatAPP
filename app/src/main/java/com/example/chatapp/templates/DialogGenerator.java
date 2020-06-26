@@ -1,5 +1,6 @@
 package com.example.chatapp.templates;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,16 +11,23 @@ import android.util.Log;
 
 import com.example.chatapp.R;
 
-public class Dialog2 extends DialogFragment implements OnClickListener {
+@SuppressLint("ValidFragment")
+public class DialogGenerator extends DialogFragment implements OnClickListener {
 
     final String LOG_TAG = "myLogs";
+    AlertDialog.Builder adb;
+
+    public DialogGenerator(String DialogText, String DialogTitle, Boolean WithNeutral){
+        adb = new AlertDialog.Builder(getActivity())
+                .setTitle(DialogTitle)
+                .setPositiveButton(R.string.yes, this)
+                .setNegativeButton(R.string.no, this)
+                .setMessage(DialogText);
+        if(WithNeutral)
+            adb.setNeutralButton(R.string.maybe, this);
+    }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
-                .setTitle("Title!").setPositiveButton(R.string.yes, this)
-                .setNegativeButton(R.string.no, this)
-                .setNeutralButton(R.string.maybe, this)
-                .setMessage("some text");
         return adb.create();
     }
 

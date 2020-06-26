@@ -71,10 +71,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
+            android:layout_margin="20dp"
             android:paddingLeft="55dp"
             android:paddingRight="55dp"
             android:text="@string/log_out"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/buttonDeleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingLeft="55dp"
+            android:paddingRight="55dp"
+            android:text="@string/delete_account"
             android:textAllCaps="false"/>
     </LinearLayout>
 </ScrollView>

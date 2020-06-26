@@ -47,6 +47,8 @@ public class NavigationActivity extends AppCompatActivity
     FragmentSettings settings;
     TextView textView;
 
+    FragmentTransaction ftrans;
+
     private FirebaseAuth mAuth;
     private View header;
 
@@ -63,8 +65,19 @@ public class NavigationActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
+        if(!hasConnection(this)) {
+            startActivity(new Intent(this,LoginActivity.class));
+            Toast.makeText(this,R.string.no_internet_connection,Toast.LENGTH_LONG).show();
+        }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(mAuth.getCurrentUser() == null){
+            startActivity(new Intent(this,LoginActivity.class));
+            Toast.makeText(this, R.string.not_authorized,Toast.LENGTH_LONG).show();
+        }
+
+
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             @Override
@@ -105,7 +118,7 @@ public class NavigationActivity extends AppCompatActivity
         /*textView = findViewById(R.id.textViewMainMessage);
         textView.setMovementMethod(new ScrollingMovementMethod());*/
 
-        FragmentTransaction ftrans = getFragmentManager().beginTransaction();
+        ftrans = getFragmentManager().beginTransaction();
         ftrans.replace(R.id.container, forms);
 
         if(!hasConnection(getApplicationContext())){
@@ -114,6 +127,10 @@ public class NavigationActivity extends AppCompatActivity
             startActivity(new Intent(this, LoginActivity.class));
         }
 
+        if(mAuth.getCurrentUser() == null){
+            startActivity(new Intent(this,LoginActivity.class));
+            Toast.makeText(this, R.string.not_authorized,Toast.LENGTH_LONG).show();
+        }
         /*pushService = new Intent(this,PushService.class);
         startService(pushService);*/
     }
@@ -168,7 +185,6 @@ public class NavigationActivity extends AppCompatActivity
         final ImageView imageView = header.findViewById(R.id.imageViewDisplayAvatar);
         final TextView textView = header.findViewById(R.id.textViewDisplayLogin);
         if(user != null) {
-            if (user.getPhotoUrl() != null) {
                 StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
                 ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -180,9 +196,10 @@ public class NavigationActivity extends AppCompatActivity
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Toast toast = Toast.makeText(getApplicationContext(),
+                        /*Toast toast = Toast.makeText(getApplicationContext(),
                                 exception.getMessage(), Toast.LENGTH_SHORT);
-                        toast.show();
+                        toast.show();*/
+                        Picasso.get().load(R.drawable.no_image).into(imageView);
                     }
                 });
                 //Picasso.get().load(user.getPhotoUrl()).into(imageView);
@@ -190,7 +207,6 @@ public class NavigationActivity extends AppCompatActivity
                 Glide.with(ProfileActivity.this)
                         .load(user.getPhotoUrl().toString())
                         .into(imageView);*/
-            }
             if (user.getDisplayName() != null) {
                 textView.setText(user.getDisplayName());
             } else textView.setText(user.getEmail());

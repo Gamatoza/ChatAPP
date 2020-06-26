@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -125,7 +126,10 @@ public class FragmentForums extends Fragment {
         root.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(user.isEmailVerified())
                 startActivity(new Intent(getActivity(), CreateQuestionActivity.class));
+                else
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.verification_check,Toast.LENGTH_SHORT).show();
             }
         });
         // Inflate the layout for this fragment

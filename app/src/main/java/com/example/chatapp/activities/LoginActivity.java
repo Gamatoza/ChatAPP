@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static com.example.chatapp.NavigationActivity.hasConnection;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText editTextEmail,editTextPassword;
@@ -37,8 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.editTextLogPassword);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        if(hasConnection(getApplicationContext())) {
-
             findViewById(R.id.buttonLogin).setOnClickListener(this);
             findViewById(R.id.textViewSignUp).setOnClickListener(this);
 
@@ -47,36 +47,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             findViewById(R.id.textViewResetPassword).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (editTextEmail.getText().toString().isEmpty()) {
-                        editTextEmail.setError(getString(R.string.enter_email_to_reset));
-                        editTextEmail.requestFocus();
-                        return;
-                    } else {
-                        FirebaseAuth.getInstance().sendPasswordResetEmail(editTextEmail.getText().toString())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), R.string.resend_email, Toast.LENGTH_SHORT).show();
+                    if(hasConnection(getApplicationContext())) {
+
+                        if (editTextEmail.getText().toString().isEmpty()) {
+                            editTextEmail.setError(getString(R.string.enter_email_to_reset));
+                            editTextEmail.requestFocus();
+                            return;
+                        } else {
+                            FirebaseAuth.getInstance().sendPasswordResetEmail(editTextEmail.getText().toString())
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(getApplicationContext(), R.string.resend_email, Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
-                    }
+                                    });
+                        }
+                    }else Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
+
                 }
             });
-        } else{
-
-            View.OnClickListener listener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
-
-                }
-            };
-            findViewById(R.id.buttonLogin).setOnClickListener(listener);
-            findViewById(R.id.textViewSignUp).setOnClickListener(listener);
-            findViewById(R.id.textViewResetPassword).setOnClickListener(listener);
-        }
     }
 
     private void userLogin() {
@@ -136,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+        if(hasConnection(getApplicationContext()))
         switch (v.getId()){
             case R.id.textViewSignUp:
                 finish();
@@ -145,7 +137,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 userLogin();
                 break;
         }
-    }
+        else Toast.makeText(getApplicationContext(),R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
+
+}
 
     public static boolean hasConnection(Context context)
     {

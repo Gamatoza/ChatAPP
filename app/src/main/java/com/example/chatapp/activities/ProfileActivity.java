@@ -67,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                showImageChooser();
+                    showImageChooser();
             }
         });
 
@@ -91,16 +91,18 @@ public class ProfileActivity extends AppCompatActivity {
         //multy check for request
         if(requestCode == CHOOSE_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null){
 
-            uriProfileImage = data.getData();
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uriProfileImage);
-                imageView.setImageBitmap(bitmap);
+                uriProfileImage = data.getData();
 
-                uploadImageToFirebaseStorage();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
+                    imageView.setImageBitmap(bitmap);
+
+                    uploadImageToFirebaseStorage();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
         }
     }
@@ -155,6 +157,7 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);
                     profileImgURL = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -168,10 +171,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Image Chooser Manager
     private void showImageChooser(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Profile Image"),CHOOSE_IMAGE);
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
+
     }
 
 
@@ -180,7 +184,6 @@ public class ProfileActivity extends AppCompatActivity {
         final FirebaseUser user = mAuth.getCurrentUser();
 
         if(user != null) {
-            if (user.getPhotoUrl() != null) {
                 StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl("gs://chat-program-43efe.appspot.com/profilepics");
                 ref.child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -192,9 +195,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        Picasso.get().load(R.drawable.no_image).into(imageView);
+                        /*
                         Toast toast = Toast.makeText(getApplicationContext(),
                                 exception.getMessage(), Toast.LENGTH_SHORT);
-                        toast.show();
+                        toast.show();*/
                     }
                 });
                 //Picasso.get().load(user.getPhotoUrl()).into(imageView);
@@ -202,7 +207,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Glide.with(ProfileActivity.this)
                         .load(user.getPhotoUrl().toString())
                         .into(imageView);*/
-            }
             if (user.getDisplayName() != null) {
                 editText.setText(user.getDisplayName());
             }
