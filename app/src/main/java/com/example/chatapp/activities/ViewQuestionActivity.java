@@ -127,14 +127,16 @@ public class ViewQuestionActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     currentQuestion = dataSnapshot.getValue(Question.class);
 
-                    //currentQuestion.getId() если нужно что бы оно не добовляло нового
+
                 /*
                 Date now = new Date();
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd");
                 //.child(f.format(now)) если нужно подстраивать под время
                 */
-                    HistoryRef.push().setValue(currentQuestion.getId());
+                    //.child(currentQuestion.getId()) если нужно что бы оно не добовляло нового
+                    //.push() если нужно что бы были разные
+                    HistoryRef.child(currentQuestion.getId()).setValue(currentQuestion.getId());
                     //FULL.addContent(Purpose.History,currentQuestion.generateInfo());
                     textViewTitle.setText(currentQuestion.getTitle());
                     textViewDescription.setText(currentQuestion.getMainMessage().getText());

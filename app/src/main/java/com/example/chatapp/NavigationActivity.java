@@ -45,7 +45,6 @@ public class NavigationActivity extends AppCompatActivity
     FragmentLittleHelp littleHelp;
     FragmentForums forms;
     FragmentSettings settings;
-    TextView textView;
 
     FragmentTransaction ftrans;
 
@@ -70,7 +69,8 @@ public class NavigationActivity extends AppCompatActivity
             Toast.makeText(this,R.string.no_internet_connection,Toast.LENGTH_LONG).show();
         }
 
-        if(mAuth.getCurrentUser() == null){
+        if(mAuth.getCurrentUser() == null || mAuth.getCurrentUser().getEmail() == null){
+            mAuth.signOut();
             startActivity(new Intent(this,LoginActivity.class));
             Toast.makeText(this, R.string.not_authorized,Toast.LENGTH_LONG).show();
         }
@@ -83,7 +83,6 @@ public class NavigationActivity extends AppCompatActivity
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-
             }
             @Override
             public void onDrawerOpened(View drawerView) {
