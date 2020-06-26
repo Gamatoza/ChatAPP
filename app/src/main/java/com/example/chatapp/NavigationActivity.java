@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.transition.FragmentTransitionSupport;
 
 import com.example.chatapp.activities.LoginActivity;
 import com.example.chatapp.activities.userlibrary.CreatedActivity;
@@ -107,7 +108,10 @@ public class NavigationActivity extends AppCompatActivity
 
         loadUserInformation();
 
-
+        ftrans = getFragmentManager().beginTransaction();
+        ftrans.replace(R.id.container, littleHelp);
+        ftrans.addToBackStack(null);
+        ftrans.commit();
     }
 
     @Override
@@ -117,8 +121,7 @@ public class NavigationActivity extends AppCompatActivity
         /*textView = findViewById(R.id.textViewMainMessage);
         textView.setMovementMethod(new ScrollingMovementMethod());*/
 
-        ftrans = getFragmentManager().beginTransaction();
-        ftrans.replace(R.id.container, forms);
+
 
         if(!hasConnection(getApplicationContext())){
             Toast.makeText(getApplicationContext(), R.string.no_internet_connection,Toast.LENGTH_SHORT).show();
