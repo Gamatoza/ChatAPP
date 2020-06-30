@@ -63,6 +63,7 @@
             android:textSize="18dp"
             />
 
+
         <TextView
             android:id="@+id/textViewResetPassword"
             android:layout_below="@id/textViewSignUp"

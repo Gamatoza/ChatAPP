@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chatapp.R;
 import com.example.chatapp.source.Message;
 import com.example.chatapp.source.Question;
+import com.example.chatapp.test.Storage;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,7 +86,6 @@ public class ChangeQuestionActivity extends AppCompatActivity {
                         .child(FORUM_KEY)
                         .getRef().removeValue();
                 finish();
-
             }
         });
     }

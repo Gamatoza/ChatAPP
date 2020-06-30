@@ -19,7 +19,7 @@
     <string name="delete_message_text">Do you really want to remove this message?</string>
     <string name="rate_message_text">Do you really want to mark this message as a response?</string>
 
-    <string name="TextPreview">Welcome to the <b>Forum Chat!</b>\nHere you can quickly get an answer to any of your questions, if any.\nFirstly, you should confirm your mail by clicking on the appropriate button in the <b>Settings</b>.\nSecondly, it’s also recommended that you set your own avatar there and assign a nickname.\nTo ask a question, go to the <b>Forums</b> tab and click the button with a <b>+</b> sign.\nIf you want to look at question or find the one, go to the <b>Forums</b> tab, the search bar is also located here.\nIf you want to add a question to the tracked ones, you just need to click on the <b>Star</b> icon right in the question itself to find out when it will be answered.\nTo view the questions that you created or those that you marked as <b>Tracked</b>, go to the <b>Library</b> tab. Also here located <b>History of views.</b>\nHave a nice use!</string>
+    <string name="TextPreview">Welcome to the <b>Forum Chat!</b>\nHere you can quickly get an answer to any of your questions, if any.\nFirstly, you should confirm your mail by clicking on the appropriate button in the <b>Settings</b>.\nSecondly, it’s also recommended that you set your own avatar there and assign a nickname.\nTo ask a question, go to the <b>Forums</b> tab and click the button with a <b>+</b> sign.\nIf you want to look at question or find the one, go to the <b>Forums</b> tab, the search bar is also located here.\nIf you want to add a question to the tracked ones, you just need to click on the <b>Star</b> icon right in the question itself to find out when it will be answered.\nTo view the questions that you created or those that you marked as <b>Tracked</b>, go to the <b>Library</b> tab. Also here located <b>History of views.</b>\nWe also ask you to observe order and discipline when communicating with other users.\nHave a nice use!</string>
 
     <string name="change_message">Change message</string>
     <string name="delete_message">Delete message</string>
@@ -71,7 +71,7 @@
     <!--About-->
     <string name="about_program">About program</string>
     <string name="message_aboutProgram">
-        Program version 1.0\nThe program is not subject to a commercial company and is distributed for informational purposes only\nThe author of the program is not responsible for possible breakdowns inside the program, but regularly updates it at the request of testers\nAuthors:\nProgrammer: Vlasov T. S.\nDesigner: T. S. Vlasov\nTesters:\nAndrey Migutsky\nArthur Lange\nVictor Matveev\nMax Nirov\nIgor Ulyanov\nI\nThank you for using this product!
+        Program version 1.0\nThe program is not subject to a commercial company and is distributed for informational purposes only\nThe author of the program is not responsible for possible breakdowns inside the program, but regularly updates it at the request of testers\nAuthors:\nProgrammer: Vlasov T. S.\nDesigner: Vlasov T. S.\nTesters:\nAndrey Migutsky\nArthur Lange\nVictor Matveev\nMax Nirov\nIgor Ulyanov\nI\nThank you for using this product!
     </string>
     <string name="understand">Got it</string>
     <string name="track_question_got">Tracked question got answer!</string>

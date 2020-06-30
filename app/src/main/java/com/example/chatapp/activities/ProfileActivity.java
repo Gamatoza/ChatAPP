@@ -59,7 +59,6 @@ public class ProfileActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
 
 
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
